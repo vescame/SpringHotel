@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import edu.les.entity.AddressEntity;
 import edu.les.entity.UserEntity;
 import edu.les.repository.UserRepository;
 
@@ -22,7 +23,8 @@ public class RegistrationController {
 	private final String statusKey = "REGISTER_STATUS";
 	private final String statusValueSuccess = "Usuario registrado com sucesso!";
 	private final String statusValueFailure = "Falha ao cadastrar usuario!";
-	private final String userEntityThymeleafObject = "userEntity";
+	private final String userEntityThObj = "userEntity";
+	private final String addressEntityThObj = "addressEntity";
 
 	@RequestMapping(value = registerUrl, method = RequestMethod.GET)
 	public ModelAndView registerView(Model model) {
@@ -32,15 +34,17 @@ public class RegistrationController {
 		} else {
 			modelAndView.addObject(this.statusKey, this.statusValueFailure);
 		}
-		modelAndView.addObject(this.userEntityThymeleafObject, this.userRepository.findById("12345678910"));
+		modelAndView.addObject(this.userEntityThObj, new UserEntity());
+		modelAndView.addObject(this.addressEntityThObj, new AddressEntity());
 		return modelAndView;
 	}
 
 	@RequestMapping(value = registerUrl, method = RequestMethod.POST)
-	public ModelAndView addRegister(@ModelAttribute(userEntityThymeleafObject) UserEntity userEntity,
+	public ModelAndView addRegister(@ModelAttribute(userEntityThObj) UserEntity userEntity,
+			@ModelAttribute(addressEntityThObj) AddressEntity addressEntity,
 			RedirectAttributes redirectAttributes) {
 		ModelMap modelMap = new ModelMap();
-		redirectAttributes.addFlashAttribute(this.statusKey, this.statusValueFailure);
+		// redirectAttributes.addFlashAttribute(this.statusKey, this.statusValueFailure);
 		redirectAttributes.addFlashAttribute(this.statusKey, this.statusValueSuccess);
 		return new ModelAndView("redirect:" + this.registerUrl, modelMap);
 	}

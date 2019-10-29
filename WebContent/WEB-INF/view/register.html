@@ -8,7 +8,67 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="./js/query-zipcode.js"></script>
+	<!-- src="js/query-zipcode.js" -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+			function limpa_formulario_cep() {
+				// Limpa valores do formulario de cep.
+				$("#txtStreet").val("");
+				$("#txtDistrict").val("");
+				$("#txtCity").val("");
+				$("#txtFederalUnit").val("");
+			}
+
+			//Quando o campo cep perde o foco.
+			$("#txtZip").blur(function () {
+
+				//Nova variavel "cep" somente com digitos.
+				var cep = $(this).val().replace(/\D/g, '');
+
+				//Verifica se campo cep possui valor informado.
+				if (cep != "") {
+
+					//Expressao regular para validar o CEP.
+					var validacep = /^[0-9]{8}$/;
+
+					//Valida o formato do CEP.
+					if (validacep.test(cep)) {
+
+						//Preenche os campos com "..." enquanto consulta webservice.
+						$("#txtStreet").val("...");
+						$("#txtDistrict").val("...");
+						$("#txtCity").val("...");
+						$("#txtFederalUnit").val("...");
+
+						//Consulta o webservice viacep.com.br/
+						$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+
+							if (!("erro" in dados)) {
+								//Atualiza os campos com os valores da consulta.
+								$("#txtStreet").val(dados.logradouro);
+								$("#txtDistrict").val(dados.bairro);
+								$("#txtCity").val(dados.localidade);
+								$("#txtFederalUnit").val(dados.uf);
+							} //end if.
+							else {
+								//CEP pesquisado nao foi encontrado.
+								limpa_formulario_cep();
+								alert("CEP nao encontrado.");
+							}
+						});
+					} else {
+						//cep invalido.
+						limpa_formulario_cep();
+						alert("Formato de CEP invalido.");
+					}
+				} else {
+					//cep sem valor, limpa formulrio.
+					limpa_formulario_cep();
+				}
+			});
+		});
+	</script>
 </head>
 
 <body>
@@ -28,7 +88,7 @@
 		</div>
 	</nav>
 	<div class="container justify-content-center">
-		<form id="registerForm" th:action="@{/register}" method="post" th:object="${userEntity}">
+		<form id="userForm" th:action="@{/register}" method="post" th:object="${userEntity}">
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label for="inputCpf">CPF</label> <input th:field="*{userCpf}" type="text" class="form-control"
@@ -41,28 +101,30 @@
 						placeholder="Name">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-2">
-					<label>Zip</label> <input th:field="*{zipCode}" type="text" class="form-control"
-						placeholder="ex.: 01001000" id="txtZip">
+			<div th:object="${addressEntity}">
+				<div class="form-row">
+					<div class="form-group col-md-2">
+						<label>Zip</label> <input th:field="*{zipCode}" type="text" class="form-control"
+							placeholder="ex.: 01001000" id="txtZip">
+					</div>
 				</div>
-			</div>
-			<div class="form-row">
-				<div class="form-group col-md-6"><label>Street</label> <input type="text" class="form-control"
-						id="txtStreet" placeholder="Street" readonly="readonly"></div>
-				<div class="form-group col-md-4"><label>District</label> <input type="text" class="form-control"
-						id="txtDistrict" placeholder="District" readonly="readonly"></div>
-				<div class="form-group col-md-2"><label>Number</label> <input type="text" class="form-control"
-						id="txtHouseNumber" placeholder="ex.: 443"></div>
-			</div>
-			<div class="form-row">
-				<div class="form-group col-md-10">
-					<label>City</label> <input type="text" class="form-control" id="txtCity" placeholder="Another City"
-						readonly="readonly">
+				<div class="form-row">
+					<div class="form-group col-md-6"><label>Street</label> <input th:field="*{street}" type="text"
+							class="form-control" id="txtStreet" placeholder="Street" readonly="readonly"></div>
+					<div class="form-group col-md-4"><label>District</label> <input th:field="*{district}" type="text"
+							class="form-control" id="txtDistrict" placeholder="District" readonly="readonly"></div>
+					<div class="form-group col-md-2"><label>Number</label> <input th:field="*{houseNumber}" type="text"
+							class="form-control" id="txtHouseNumber" placeholder="ex.: 443"></div>
 				</div>
-				<div class="form-group col-md-2">
-					<label>Federal Unit</label> <input type="text" class="form-control" id="txtFederalUnit"
-						placeholder="Federal Unit" readonly="readonly">
+				<div class="form-row">
+					<div class="form-group col-md-10">
+						<label>City</label> <input th:field="*{city}" type="text" class="form-control" id="txtCity"
+							placeholder="Another City" readonly="readonly">
+					</div>
+					<div class="form-group col-md-2">
+						<label>Federal Unit</label> <input th:field="*{federalUnit}" type="text" class="form-control"
+							id="txtFederalUnit" placeholder="Federal Unit" readonly="readonly">
+					</div>
 				</div>
 			</div>
 			<div class="form-row">
@@ -89,7 +151,9 @@
 						id="inputPassword4" placeholder="Password">
 				</div>
 			</div>
-			<button type="submit" class="btn btn-primary float-right mt-5">Register</button>
+			<div class="form-group col-md-5">
+				<button type="submit" class="btn btn-primary float-right mt-3">Register</button>
+			</div>
 		</form>
 	</div>
 </body>
