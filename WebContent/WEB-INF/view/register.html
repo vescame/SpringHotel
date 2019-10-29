@@ -1,0 +1,97 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Registration</title>
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./js/query-zipcode.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container">
+			<a class="navbar-brand" href="home">Spring Hotel</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+		</div>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item"><a class="nav-link" href="login">Login</a></li>
+				<li class="nav-item"><a class="nav-link" href="about">about</a>
+			</ul>
+		</div>
+	</nav>
+	<div class="container justify-content-center">
+		<form id="registerForm" th:action="@{/register}" method="post" th:object="${userEntity}">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="inputCpf">CPF</label> <input th:field="*{userCpf}" type="text" class="form-control"
+						id="inputCpf" placeholder="CPF">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>Name</label> <input th:field="*{username}" type="text" class="form-control" id="txtUsername"
+						placeholder="Name">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-2">
+					<label>Zip</label> <input th:field="*{zipCode}" type="text" class="form-control"
+						placeholder="ex.: 01001000" id="txtZip">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6"><label>Street</label> <input type="text" class="form-control"
+						id="txtStreet" placeholder="Street" readonly="readonly"></div>
+				<div class="form-group col-md-4"><label>District</label> <input type="text" class="form-control"
+						id="txtDistrict" placeholder="District" readonly="readonly"></div>
+				<div class="form-group col-md-2"><label>Number</label> <input type="text" class="form-control"
+						id="txtHouseNumber" placeholder="ex.: 443"></div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-10">
+					<label>City</label> <input type="text" class="form-control" id="txtCity" placeholder="Another City"
+						readonly="readonly">
+				</div>
+				<div class="form-group col-md-2">
+					<label>Federal Unit</label> <input type="text" class="form-control" id="txtFederalUnit"
+						placeholder="Federal Unit" readonly="readonly">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label>Telephone</label>
+					<input type="tel" class="form-control" id="txtTelephone" value="11 5555 5555">
+				</div>
+				<div class="form-group col-md-4">
+					<label>Celphone</label>
+					<input type="tel" class="form-control" id="txtCelphone" value="11 5555 5555">
+				</div>
+				<div class=" form-group col-md-4">
+					<label>Birthday</label>
+					<input class="form-control" type="date" value="1990-01-01" id="txtDate">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="inputEmail">Email</label> <input th:field="*{username}" type="email"
+						class="form-control" id="inputEmail4" placeholder="Email">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="inputPassword4">Password</label> <input type="password" class="form-control"
+						id="inputPassword4" placeholder="Password">
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary float-right mt-5">Register</button>
+		</form>
+	</div>
+</body>
+
+</html>
