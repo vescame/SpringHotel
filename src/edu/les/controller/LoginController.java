@@ -48,15 +48,12 @@ public class LoginController {
 			RedirectAttributes redirAttr) {
 		ModelMap modelMap = new ModelMap();
 		String url = "redirect:" + this.loginUrl;
-		;
-		Iterable<CredentialEntity> i = this.credentialRepository.findAll();// this.credentialRepository.findLoginAndPassword(credentialEntity.getEmail(),
-																			// credentialEntity.getPassword());
-		for (CredentialEntity c : i) {
-			if (c.equals(credentialEntity)) {
-				url = "redirect:" + this.homeUrl;
-			} else {
-				redirAttr.addFlashAttribute(this.statusKey, this.statusValueInvalidCredentials);
-			}
+		CredentialEntity c = this.credentialRepository.findLoginAndPassword(credentialEntity.getEmail(),
+				credentialEntity.getPassword());
+		if (c.equals(credentialEntity)) {
+			url = "redirect:" + this.homeUrl;
+		} else {
+			redirAttr.addFlashAttribute(this.statusKey, this.statusValueInvalidCredentials);
 		}
 		return new ModelAndView(url, modelMap);
 	}
