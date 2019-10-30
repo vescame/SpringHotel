@@ -12,12 +12,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.CredentialEntity;
 import edu.les.entity.UserEntity;
-import edu.les.repository.CredentialRepository;
+import edu.les.service.LoginService;
 
 @Controller
 public class LoginController {
 	@Autowired
-	CredentialRepository credentialRepository;
+	LoginService loginService;
 
 	private final String defaultUrlRedirectsLogin = "/";
 	private final String loginUrl = "/login";
@@ -48,9 +48,8 @@ public class LoginController {
 			RedirectAttributes redirAttr) {
 		ModelMap modelMap = new ModelMap();
 		String url = "redirect:" + this.loginUrl;
-		CredentialEntity c = this.credentialRepository.findLoginAndPassword(credentialEntity.getEmail(),
-				credentialEntity.getPassword());
-		if (c.equals(credentialEntity)) {
+		boolean canLogin = this.loginService.tryLogin(credentialEntity);
+		if (canLogin) {
 			url = "redirect:" + this.homeUrl;
 		} else {
 			redirAttr.addFlashAttribute(this.statusKey, this.statusValueInvalidCredentials);
