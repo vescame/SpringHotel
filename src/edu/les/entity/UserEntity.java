@@ -9,6 +9,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity(name = "hotel_user")
 @Table(name = "hotel_user")
 public class UserEntity {
@@ -97,6 +99,7 @@ public class UserEntity {
 		this.email = email;
 	}
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_of_birth", nullable = false)
 	public Date getDateOfBirth() {
@@ -107,7 +110,7 @@ public class UserEntity {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	@Column(name = "status", nullable = false)
+	@Column(name = "status", nullable = false, columnDefinition = "DEFAULT A")
 	public char getStatus() {
 		return status;
 	}
