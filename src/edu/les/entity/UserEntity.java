@@ -23,7 +23,7 @@ public class UserEntity {
 	private String celphoneNumber;
 	private String email;
 	private Date dateOfBirth;
-	private char status;
+	private char status = 'A';
 //	private CredentialEntity credentialEntity;
 
 	@Id
@@ -110,13 +110,13 @@ public class UserEntity {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	@Column(name = "status", nullable = false, columnDefinition = "DEFAULT A")
+	@Column(name = "status", nullable = false)
 	public char getStatus() {
-		return status;
+		return Character.toUpperCase(status);
 	}
 
 	public void setStatus(char status) {
-		this.status = status;
+		this.status = Character.toUpperCase(status);
 	}
 
 //	@OneToOne(fetch = FetchType.LAZY)
