@@ -87,6 +87,24 @@
 			</ul>
 		</div>
 	</nav>
+	<div th:if="${FAILURE_STATUS}" class="alert alert-danger alert-dismissible fade show" role="alert">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${FAILURE_STATUS}></h4>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div th:if="${SUCCESSFUL_STATUS}" class="alert alert-success alert-dismissible fade show" role="alert">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${SUCCESSFUL_STATUS}></h4>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
 	<div class="container justify-content-center">
 		<form id="userForm" th:action="@{/register}" method="post" th:object="${userEntity}">
 			<div class="form-row">
