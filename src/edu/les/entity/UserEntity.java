@@ -21,7 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class UserEntity {
 	private String userCpf;
 	private String username;
-	private int userRoleId;
+	private UserRoleEntity userRole;
 	private int houseNumber;
 	private String telephoneNumber;
 	private String celphoneNumber;
@@ -51,12 +51,12 @@ public class UserEntity {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "role_id")
-	public int getUserRole() {
-		return userRoleId;
+	public UserRoleEntity getUserRole() {
+		return userRole;
 	}
 
-	public void setUserRole(int userRoleId) {
-		this.userRoleId = userRoleId;
+	public void setUserRole(UserRoleEntity userRoleId) {
+		this.userRole = userRoleId;
 	}
 
 	@Column(name = "house_number", nullable = false)
