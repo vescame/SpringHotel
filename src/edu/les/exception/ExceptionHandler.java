@@ -10,7 +10,7 @@ public class ExceptionHandler extends Exception {
 	private String message;	
 	
 	public ExceptionHandler() {
-		super();
+		message = super.getMessage();
 	}
 	
 	public ExceptionHandler(String message) {

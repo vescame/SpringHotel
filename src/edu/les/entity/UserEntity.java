@@ -4,11 +4,16 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity(name = "hotel_user")
@@ -17,14 +22,13 @@ public class UserEntity {
 	private String userCpf;
 	private String username;
 	private int userRoleId;
-	private String zipCode;
 	private int houseNumber;
 	private String telephoneNumber;
 	private String celphoneNumber;
-	private String email;
 	private Date dateOfBirth;
 	private char status = 'A';
-//	private CredentialEntity credentialEntity;
+	private AddressEntity addressEntity;
+	private CredentialEntity credentialEntity;
 
 	@Id
 	@Column(name = "user_cpf", length = 11)
@@ -45,22 +49,14 @@ public class UserEntity {
 		this.username = username;
 	}
 
-	@Column(name = "user_role_id", nullable = false)
-	public int getUserRoleId() {
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "role_id")
+	public int getUserRole() {
 		return userRoleId;
 	}
 
-	public void setUserRoleId(int userRoleId) {
+	public void setUserRole(int userRoleId) {
 		this.userRoleId = userRoleId;
-	}
-
-	@Column(name = "zip_code", nullable = false, length = 8)
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
 	}
 
 	@Column(name = "house_number", nullable = false)
@@ -90,15 +86,6 @@ public class UserEntity {
 		this.celphoneNumber = celphoneNumber;
 	}
 
-	@Column(name = "email", nullable = false, length = 35)
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_of_birth", nullable = false)
@@ -119,14 +106,26 @@ public class UserEntity {
 		this.status = Character.toUpperCase(status);
 	}
 
-//	@OneToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "email", referencedColumnName = "email")
-//	public CredentialEntity getCredentialEntity() {
-//		return credentialEntity;
-//	}
-//
-//	public void setCredentialEntity(CredentialEntity credentialEntity) {
-//		this.credentialEntity = credentialEntity;
-//	}
+	@OneToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.ALL)
+	@JoinColumn(name = "zip_code")
+	public AddressEntity getAddressEntity() {
+		return addressEntity;
+	}
+
+	public void setAddressEntity(AddressEntity addressEntity) {
+		this.addressEntity = addressEntity;
+	}
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.ALL)
+	@JoinColumn(name = "credential_id")
+	public CredentialEntity getCredentialEntity() {
+		return credentialEntity;
+	}
+
+	public void setCredentialEntity(CredentialEntity credentialEntity) {
+		this.credentialEntity = credentialEntity;
+	}
 
 }

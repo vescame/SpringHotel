@@ -19,6 +19,9 @@ public class LoginController {
 	@Autowired
 	LoginService loginService;
 
+//	@Autowired
+//	CredentialService credentialService;
+
 	private final String defaultUrlRedirectsLogin = "/";
 	private final String loginUrl = "/login";
 	private final String logoutUrl = "/logout";
@@ -63,4 +66,21 @@ public class LoginController {
 		return new ModelAndView("redirect:" + this.loginUrl, modelMap);
 	}
 
+//	@RequestMapping(value = "management/adm", method = RequestMethod.GET)
+//	public ModelAndView admView() {
+//		return new ModelAndView("/admin").addObject("adminCredential", new CredentialEntity());
+//	}
+//
+//	@RequestMapping(value = "management/login", method = RequestMethod.POST)
+//	public ModelAndView loginAdm(@ModelAttribute("adminCredentialEntity") CredentialEntity credentialEntity)
+//			throws ExceptionHandler {
+//		CredentialEntity c = new CredentialEntity();
+//		c.setEmail("Administrator");
+//		c.setPassword("Administrator");
+//		this.credentialService.add(c);
+//		if (c.equals(credentialEntity)) {
+//			
+//		}
+//		return new ModelAndView("management/login/adm");
+//	}
 }

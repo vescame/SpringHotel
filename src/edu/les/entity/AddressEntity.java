@@ -1,20 +1,30 @@
 package edu.les.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity(name = "address")
+@Table(name = "address")
 public class AddressEntity {
-	private String zipCode;
+	private char[] zipCode = new char[8];
 	private String street;
 	private String district;
 	private String city;
-	private String federalUnit;
+	private char[] federalUnit = new char[2];
 
-	public String getZipCode() {
+	@Id
+	@Column(name = "zip_code", nullable = false, length = 8)
+	public char[] getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(String zipCode) {
+	public void setZipCode(char[] zipCode) {
 		this.zipCode = zipCode;
 	}
 
+	@Column(name = "street_name", nullable = false, length = 45)
 	public String getStreet() {
 		return street;
 	}
@@ -23,6 +33,7 @@ public class AddressEntity {
 		this.street = street;
 	}
 
+	@Column(name = "district_name", nullable = false, length = 45)
 	public String getDistrict() {
 		return district;
 	}
@@ -31,6 +42,7 @@ public class AddressEntity {
 		this.district = district;
 	}
 
+	@Column(name = "city_name", nullable = false, length = 45)
 	public String getCity() {
 		return city;
 	}
@@ -39,11 +51,12 @@ public class AddressEntity {
 		this.city = city;
 	}
 
-	public String getFederalUnit() {
+	@Column(name = "federal_unit", nullable = false, length = 2)
+	public char[] getFederalUnit() {
 		return federalUnit;
 	}
 
-	public void setFederalUnit(String federalUnit) {
+	public void setFederalUnit(char[] federalUnit) {
 		this.federalUnit = federalUnit;
 	}
 }
