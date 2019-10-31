@@ -3,52 +3,43 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Login</title>
-	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<div class="container">
-			<a class="navbar-brand" href="#">Spring Hotel</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
+	<nav>
+		<div>
+			<a href="#">Spring Hotel</a>
 		</div>
-		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link" href="registration">Register</a></li>
-				<li class="nav-item"><a class="nav-link" href="about">About</a>
+		<div>
+			<ul>
+				<li><a href="registration">Register</a></li>
 			</ul>
 		</div>
 	</nav>
 	<form id="loginForm" th:action="@{/login}" method="post" th:object="${credentialEntity}">
-		<div class="container">
-			<div th:if="${LOGIN_STATUS}" class="alert alert-danger alert-dismissible fade show" role="alert">
+		<div>
+			<div th:if="${LOGIN_STATUS}">
 				<h3>
 					<strong>Status</strong>
 				</h3>
 				<h4 th:text=${LOGIN_STATUS}></h4>
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+				<button type="button">
+					<span>&times;</span>
 				</button>
 			</div>
-			<div class="form-group col-md-5">
-				<label>Email</label> <input th:field="*{email}" id="txtUsername" class="form-control"
-					placeholder="example@email.com" />
+			<div>
+				<label>Email</label> <input th:field="*{email}" id="txtUsername" placeholder="example@email.com" />
 			</div>
-			<div class="form-group col-md-5">
+			<div>
 				<label>Password</label> <input type="password" th:field="*{password}" id="txtPassword"
-					class="form-control" placeholder="Strong Password" />
+					placeholder="Strong Password" />
 			</div>
-			<div class="form-group col-md-5">
-				<button type="submit" class="btn btn-primary mt-3">Login</button>
+			<div>
+				<button type="submit">Login</button>
 			</div>
 		</div>
 	</form>
 </body>
+
 </html>

@@ -3,11 +3,7 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Registration</title>
-	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<!-- src="js/query-zipcode.js" -->
 	<script type="text/javascript">
 		$(document).ready(function () {
@@ -87,106 +83,101 @@
 			</ul>
 		</div>
 	</nav>
-	<div th:if="${FAILURE_STATUS}" class="alert alert-danger alert-dismissible fade show" role="alert">
+	<div th:if="${FAILURE_STATUS}">
 		<h3>
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${FAILURE_STATUS}></h4>
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
+		<button type="button">
+			<span>&times;</span>
 		</button>
 	</div>
-	<div th:if="${SUCCESSFUL_STATUS}" class="alert alert-success alert-dismissible fade show" role="alert">
+	<div th:if="${SUCCESSFUL_STATUS}">
 		<h3>
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${SUCCESSFUL_STATUS}></h4>
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
+		<button type="button">
+			<span>&times;</span>
 		</button>
 	</div>
-	<div class="container justify-content-center">
+	<div>
 		<form id="userForm" th:action="@{/registration}" method="post" th:object="${userEntity}">
-			<div class="form-row">
-				<div class="form-group col-md-4">
+			<div>
+				<div>
 					<label>CPF</label>
-					<input th:field="*{userCpf}" type="text" class="form-control" id="inputCpf" placeholder="CPF">
+					<input th:field="*{userCpf}" type="text" id="inputCpf" placeholder="CPF">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-4">
+			<div>
+				<div>
 					<label>Name</label>
-					<input th:field="*{username}" type="text" class="form-control" id="txtUsername" placeholder="Name">
+					<input th:field="*{username}" type="text" id="txtUsername" placeholder="Name">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-2">
+			<div>
+				<div>
 					<label>Zip</label>
-					<input th:field="*{addressEntity.zipCode}" type="text" class="form-control" placeholder="ex.: 01001000"
-						id="txtZip">
+					<input th:field="*{addressEntity.zipCode}" type="text" placeholder="ex.: 01001000" id="txtZip">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-2">
+			<div>
+				<div>
 					<label>Federal Unit</label> <input th:field="*{addressEntity.federalUnit}" type="text"
-						class="form-control" id="txtFederalUnit" placeholder="ex.: KS" readonly="readonly">
+						id="txtFederalUnit" placeholder="ex.: KS" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-4">
+			<div>
+				<div>
 					<label>Street</label>
-					<input th:field="*{addressEntity.street}" type="text" class="form-control" id="txtStreet"
-						placeholder="ex.: Walnut St" readonly="readonly">
+					<input th:field="*{addressEntity.street}" type="text" id="txtStreet" placeholder="ex.: Walnut St"
+						readonly="readonly">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-4">
+			<div>
+				<div>
 					<label>District</label>
-					<input th:field="*{addressEntity.district}" type="text" class="form-control" id="txtDistrict"
+					<input th:field="*{addressEntity.district}" type="text" id="txtDistrict"
 						placeholder="ex.: Union Hill" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-4">
-					<label>City</label> <input th:field="*{addressEntity.city}" type="text" class="form-control"
-						id="txtCity" placeholder="ex.: Kansas City" readonly="readonly">
+			<div>
+				<div>
+					<label>City</label> <input th:field="*{addressEntity.city}" type="text" id="txtCity"
+						placeholder="ex.: Kansas City" readonly="readonly">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-3">
+			<div>
+				<div>
 					<label>House Number</label>
-					<input th:field="*{houseNumber}" type="text" class="form-control" id="txtHouseNumber"
-						placeholder="ex.: 443">
+					<input th:field="*{houseNumber}" type="text" id="txtHouseNumber" placeholder="ex.: 443">
 				</div>
-				<div class="form-group col-md-3">
+				<div>
 					<label>Telephone</label>
-					<input th:field="*{telephoneNumber}" type="tel" class="form-control" id="txtTelephone"
-						value="11 5555 5555">
+					<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555">
 				</div>
-				<div class="form-group col-md-3">
+				<div>
 					<label>Celphone</label>
-					<input th:field="*{celphoneNumber}" type="tel" class="form-control" id="txtCelphone"
-						value="11 5555 5555">
+					<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555">
 				</div>
-				<div class=" form-group col-md-3">
+				<div>
 					<label>Birthday</label>
-					<input th:field="*{dateOfBirth}" class="form-control" type="date" value="1990-01-01" id="txtDate">
+					<input th:field="*{dateOfBirth}" type="date" value="1990-01-01" id="txtDate">
 				</div>
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-6">
+			<div>
+				<div>
 					<label>Email</label>
-					<input th:field="*{credentialEntity.email}" type="email" class="form-control" id="inputEmail4"
-						placeholder="Email">
+					<input th:field="*{credentialEntity.email}" type="email" id="inputEmail4" placeholder="Email">
 				</div>
-				<div class="form-group col-md-6">
+				<div>
 					<label>Password</label>
-					<input th:field="*{credentialEntity.password}" type="password" class="form-control"
-						id="inputPassword4" placeholder="Password">
+					<input th:field="*{credentialEntity.password}" type="password" id="inputPassword4"
+						placeholder="Password">
 				</div>
 			</div>
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary float-right mt-3">Register</button>
+			<div>
+				<button type="submit">Register</button>
 			</div>
 		</form>
 	</div>
