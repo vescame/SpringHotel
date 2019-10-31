@@ -8,19 +8,19 @@ import javax.persistence.Table;
 @Entity(name = "address")
 @Table(name = "address")
 public class AddressEntity {
-	private char[] zipCode = new char[8];
+	private String zipCode;
 	private String street;
 	private String district;
 	private String city;
-	private char[] federalUnit = new char[2];
+	private String federalUnit;
 
 	@Id
 	@Column(name = "zip_code", nullable = false, length = 8)
-	public char[] getZipCode() {
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(char[] zipCode) {
+	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 
@@ -52,11 +52,11 @@ public class AddressEntity {
 	}
 
 	@Column(name = "federal_unit", nullable = false, length = 2)
-	public char[] getFederalUnit() {
+	public String getFederalUnit() {
 		return federalUnit;
 	}
 
-	public void setFederalUnit(char[] federalUnit) {
+	public void setFederalUnit(String federalUnit) {
 		this.federalUnit = federalUnit;
 	}
 }
