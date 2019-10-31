@@ -18,11 +18,9 @@ public class RegistrationService {
 		boolean result = true;
 		List<String> errorFields = new ArrayList<String>();
 		try {
-			if (userService.hasErrors(userEntity)) {
-				
+			if (!userService.hasErrors(userEntity)) {
+				result = false;
 			}
-
-			result = false;
 		} catch (Exception e) {
 			throw new ExceptionHandler(errorFields);
 		}
@@ -34,6 +32,11 @@ public class RegistrationService {
 		// nao e necessario explicitamente salvar as dependencias
 		// AddressEntity e CredentialEntity
 		// o hibernate faz isso para nos
-		this.userService.add(userEntity);
+		boolean hasAny = this.hasErrors(userEntity);
+		if (!hasAny) {
+			this.userService.add(userEntity);
+		} else {
+			return;
+		}
 	}
 }

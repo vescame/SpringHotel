@@ -50,7 +50,7 @@ public class UserService {
 		}
 
 		// TODO: validate user role entity only for admin user
-		if (u.getUserRole().getRoleDescription().length() == 0) {
+		if (u.getUserRole() == null) {
 			errorFields.add("User Role");
 		}
 
