@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class UserRoleEntity {
 	private int id;
 	private String roleDescription;
-	
+
 	@Id
 	@Column(name = "role_id", nullable = false)
 	public int getId() {

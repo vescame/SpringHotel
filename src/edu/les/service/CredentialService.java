@@ -1,5 +1,8 @@
 package edu.les.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,31 @@ public class CredentialService {
 			e.printStackTrace();
 			throw new ExceptionHandler();
 		}
+		return result;
+	}
+	
+	public boolean hasErrors(CredentialEntity c) throws ExceptionHandler {
+		boolean result = true;
+		List<String> errorFields = new ArrayList<String>();
+		
+		if (c == null) {
+			return result;
+		}
+		
+		if (c.getEmail().length() == 0 || c.getEmail().length() > 35) {
+			errorFields.add("Email");
+		}
+		
+		if (c.getPassword().length() > 0 || c.getPassword().length() > 35) {
+			errorFields.add("Password");
+		}
+		
+		if (errorFields.isEmpty()) {
+			result = false;
+		} else {
+			throw new ExceptionHandler();
+		}
+		
 		return result;
 	}
 }

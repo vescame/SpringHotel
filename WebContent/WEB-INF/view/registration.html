@@ -4,7 +4,6 @@
 	<meta charset="ISO-8859-1">
 	<title>Registration</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<!-- src="js/query-zipcode.js" -->
 	<script type="text/javascript">
 		$(document).ready(function () {
 
@@ -85,18 +84,14 @@
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${FAILURE_STATUS}></h4>
-		<button type="button">
-			<span>&times;</span>
-		</button>
+		<button type="button">Close</button>
 	</div>
 	<div th:if="${SUCCESSFUL_STATUS}">
 		<h3>
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${SUCCESSFUL_STATUS}></h4>
-		<button type="button">
-			<span>&times;</span>
-		</button>
+		<button type="button">Close</button>
 	</div>
 	<div>
 		<form id="userForm" th:action="@{/registration}" method="post" th:object="${userEntity}">

@@ -1,25 +1,29 @@
 package edu.les.exception;
 
 import java.sql.BatchUpdateException;
+import java.util.List;
 
 public class ExceptionHandler extends Exception {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String message;	
-	
+	private String message;
+	private List<String> fieldsWithError;
+
 	public ExceptionHandler() {
 		message = super.getMessage();
 	}
-	
-	public ExceptionHandler(String message) {
-		this.message = message;
+
+	public ExceptionHandler(List<String> fieldsWithError) {
+		this.fieldsWithError = fieldsWithError;
+		// TODO: Create an error message to be shown in the view status message
+		this.message = fieldsWithError.toString();
 	}
-	
-	public ExceptionHandler(Exception thrownException) {
-		if (thrownException instanceof BatchUpdateException) {
-			BatchUpdateException e = (BatchUpdateException) thrownException;
+
+	public ExceptionHandler(Exception sqlThrownException) {
+		if (sqlThrownException instanceof BatchUpdateException) {
+			BatchUpdateException e = (BatchUpdateException) sqlThrownException;
 			int error = e.getErrorCode();
 			switch (error) {
 			case 1406:
@@ -30,12 +34,14 @@ public class ExceptionHandler extends Exception {
 			}
 		}
 	}
-	
+
 	@Override
 	public String getMessage() {
 		return this.message;
 	}
-	
-	
-	
+
+	public List<String> getErrors() {
+		return fieldsWithError;
+	}
+
 }
