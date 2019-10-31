@@ -83,7 +83,7 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"><a class="nav-link" href="login">Login</a></li>
-				<li class="nav-item"><a class="nav-link" href="about">about</a>
+				<li class="nav-item"><a class="nav-link" href="about">About</a>
 			</ul>
 		</div>
 	</nav>
@@ -106,7 +106,7 @@
 		</button>
 	</div>
 	<div class="container justify-content-center">
-		<form id="userForm" th:action="@{/register}" method="post" th:object="${userEntity}">
+		<form id="userForm" th:action="@{/registration}" method="post" th:object="${userEntity}">
 			<div class="form-row">
 				<div class="form-group col-md-4">
 					<label>CPF</label>
@@ -119,42 +119,40 @@
 					<input th:field="*{username}" type="text" class="form-control" id="txtUsername" placeholder="Name">
 				</div>
 			</div>
-			<div th:object="${addressEntity}">
-				<div class="form-row">
-					<div class="form-group col-md-2">
-						<label>Zip</label>
-						<input th:field="*{zipCode}" type="text" class="form-control" placeholder="ex.: 01001000"
-							id="txtZip">
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="form-group col-md-2">
-						<label>Federal Unit</label> <input th:field="*{federalUnit}" type="text" class="form-control"
-							id="txtFederalUnit" placeholder="ex.: KS" readonly="readonly">
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="form-group col-md-4">
-						<label>Street</label>
-						<input th:field="*{street}" type="text" class="form-control" id="txtStreet"
-							placeholder="ex.: Walnut St" readonly="readonly">
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="form-group col-md-4">
-						<label>District</label>
-						<input th:field="*{district}" type="text" class="form-control" id="txtDistrict"
-							placeholder="ex.: Union Hill" readonly="readonly">
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="form-group col-md-4">
-						<label>City</label> <input th:field="*{city}" type="text" class="form-control" id="txtCity"
-							placeholder="ex.: Kansas City" readonly="readonly">
-					</div>
+			<div class="form-row">
+				<div class="form-group col-md-2">
+					<label>Zip</label>
+					<input th:field="*{addressEntity.zipCode}" type="text" class="form-control" placeholder="ex.: 01001000"
+						id="txtZip">
 				</div>
 			</div>
-			<div th:object="${userEntity}" class="form-row">
+			<div class="form-row">
+				<div class="form-group col-md-2">
+					<label>Federal Unit</label> <input th:field="*{addressEntity.federalUnit}" type="text"
+						class="form-control" id="txtFederalUnit" placeholder="ex.: KS" readonly="readonly">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label>Street</label>
+					<input th:field="*{addressEntity.street}" type="text" class="form-control" id="txtStreet"
+						placeholder="ex.: Walnut St" readonly="readonly">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label>District</label>
+					<input th:field="*{addressEntity.district}" type="text" class="form-control" id="txtDistrict"
+						placeholder="ex.: Union Hill" readonly="readonly">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label>City</label> <input th:field="*{addressEntity.city}" type="text" class="form-control"
+						id="txtCity" placeholder="ex.: Kansas City" readonly="readonly">
+				</div>
+			</div>
+			<div class="form-row">
 				<div class="form-group col-md-3">
 					<label>House Number</label>
 					<input th:field="*{houseNumber}" type="text" class="form-control" id="txtHouseNumber"
@@ -175,13 +173,15 @@
 					<input th:field="*{dateOfBirth}" class="form-control" type="date" value="1990-01-01" id="txtDate">
 				</div>
 			</div>
-			<div th:object="${credentialEntity}" class="form-row">
+			<div class="form-row">
 				<div class="form-group col-md-6">
-					<label>Email</label> <input th:field="*{email}" type="email" class="form-control" id="inputEmail4"
+					<label>Email</label>
+					<input th:field="*{credentialEntity.email}" type="email" class="form-control" id="inputEmail4"
 						placeholder="Email">
 				</div>
 				<div class="form-group col-md-6">
-					<label>Password</label> <input th:field="*{password}" type="password" class="form-control"
+					<label>Password</label>
+					<input th:field="*{credentialEntity.password}" type="password" class="form-control"
 						id="inputPassword4" placeholder="Password">
 				</div>
 			</div>
