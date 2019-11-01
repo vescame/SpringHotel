@@ -28,10 +28,11 @@
 				</button>
 			</div>
 			<div>
-				<label>Email</label> <input th:field="*{email}" id="txtUsername" placeholder="example@email.com" />
+				<label>Email</label> <input th:field="*{email}" maxlength="35" id="txtUsername"
+					placeholder="example@email.com" />
 			</div>
 			<div>
-				<label>Password</label> <input type="password" th:field="*{password}" id="txtPassword"
+				<label>Password</label> <input type="password" th:field="*{password}" maxlength="35" id="txtPassword"
 					placeholder="Strong Password" />
 			</div>
 			<div>
