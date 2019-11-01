@@ -52,7 +52,7 @@ public class CredentialService {
 		if (errorFields.isEmpty()) {
 			result = false;
 		} else {
-			throw new ExceptionHandler();
+			throw new ExceptionHandler(errorFields);
 		}
 		
 		return result;
