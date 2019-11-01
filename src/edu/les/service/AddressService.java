@@ -39,26 +39,26 @@ public class AddressService {
 			errorFields.add("Zip Code");
 		}
 
-		if (a.getStreet().length() == 0 || a.getStreet().length() > 45) {
+		if (a.getStreet().length() == 0 || a.getStreet().length() > 45 || a.getStreet().contains("...")) {
 			errorFields.add("Street");
 		}
 
-		if (a.getDistrict().length() == 0 || a.getDistrict().length() > 45) {
+		if (a.getDistrict().length() == 0 || a.getDistrict().length() > 45 || a.getDistrict().contains("...")) {
 			errorFields.add("District");
 		}
 
-		if (a.getCity().length() == 0 || a.getCity().length() > 45) {
+		if (a.getCity().length() == 0 || a.getCity().length() > 45 || a.getCity().contains("...")) {
 			errorFields.add("City");
 		}
 
-		if (a.getFederalUnit().length() == 0 || a.getFederalUnit().length() > 2) {
+		if (a.getFederalUnit().length() == 0 || a.getFederalUnit().length() > 2 || a.getFederalUnit().contains("...")) {
 			errorFields.add("FederalUnit");
 		}
 
 		if (errorFields.isEmpty()) {
 			result = false;
 		} else {
-			throw new ExceptionHandler();
+			throw new ExceptionHandler(errorFields);
 		}
 		return result;
 	}
