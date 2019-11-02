@@ -108,7 +108,7 @@
 					<th>Celphone</th>
 					<th>Birthday</th>
 					<th>Email</th>
-
+					<th>Role</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -121,6 +121,7 @@
 					<td th:text="${b.celphoneNumber}"/>
 					<td th:text="${b.dateOfBirth}"/>
 					<td th:text="${b.credentialEntity.email}"/>
+					<td th:text="${b.userRole.roleDescription}"/>
 					<td>
 						<button type="button">
 									<span>&times;</span>

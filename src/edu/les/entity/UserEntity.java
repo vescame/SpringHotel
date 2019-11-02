@@ -60,7 +60,7 @@ public class UserEntity {
 	}
 	
 	@Embedded
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "role_id")
 	public UserRoleEntity getUserRole() {
 		return userRole;
