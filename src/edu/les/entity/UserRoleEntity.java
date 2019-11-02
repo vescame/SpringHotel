@@ -2,6 +2,7 @@ package edu.les.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,6 +13,7 @@ public class UserRoleEntity {
 	private String roleDescription;
 
 	@Id
+	@GeneratedValue
 	@Column(name = "role_id", nullable = false)
 	public int getId() {
 		return id;

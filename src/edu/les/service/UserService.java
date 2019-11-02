@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.les.entity.UserEntity;
+import edu.les.entity.UserRoleEntity;
 import edu.les.exception.ExceptionHandler;
 import edu.les.repository.UserRepository;
 
@@ -32,6 +33,10 @@ public class UserService {
 		}
 		return result;
 	}
+	
+	public Iterable<UserEntity> fetchAll(){
+		return this.userRepository.findAll();
+	}
 
 	public boolean hasErrors(UserEntity u) throws ExceptionHandler {
 		boolean result = true;
@@ -50,9 +55,9 @@ public class UserService {
 		}
 
 		// TODO: validate user role entity only for admin user
-		if (u.getUserRole() == null) {
-			errorFields.add("User Role");
-		}
+//		if (u.getUserRole() == null) {
+//			errorFields.add("User Role");
+//		}
 
 		if (u.getHouseNumber() == 0) {
 			errorFields.add("House Number");

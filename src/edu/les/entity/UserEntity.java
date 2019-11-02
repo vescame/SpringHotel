@@ -3,6 +3,8 @@ package edu.les.entity;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -16,6 +18,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+@Embeddable
 @Entity(name = "hotel_user")
 @Table(name = "hotel_user")
 public class UserEntity {
@@ -30,6 +33,13 @@ public class UserEntity {
 	private AddressEntity addressEntity;
 	private CredentialEntity credentialEntity;
 
+	public UserEntity() {
+		UserRoleEntity userRole = new UserRoleEntity();
+		userRole.setId(1);
+		userRole.setRoleDescription("Usuario");
+		this.userRole = userRole;
+	}
+	
 	@Id
 	@Column(name = "user_cpf", length = 11)
 	public String getUserCpf() {
@@ -48,7 +58,8 @@ public class UserEntity {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	
+	@Embedded
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "role_id")
 	public UserRoleEntity getUserRole() {
@@ -106,6 +117,7 @@ public class UserEntity {
 		this.status = Character.toUpperCase(status);
 	}
 
+	@Embedded
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.ALL)
 	@JoinColumn(name = "zip_code")
@@ -117,7 +129,8 @@ public class UserEntity {
 		this.addressEntity = addressEntity;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@Embedded
+	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.ALL)
 	@JoinColumn(name = "credential_id")
 	public CredentialEntity getCredentialEntity() {

@@ -1,10 +1,12 @@
 package edu.les.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Embeddable
 @Entity(name = "address")
 @Table(name = "address")
 public class AddressEntity {

@@ -84,14 +84,18 @@
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${FAILURE_STATUS}></h4>
-		<button type="button">Close</button>
+		<button type="button">
+			<span>&times;</span>
+		</button>
 	</div>
 	<div th:if="${SUCCESSFUL_STATUS}">
 		<h3>
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${SUCCESSFUL_STATUS}></h4>
-		<button type="button">Close</button>
+		<button type="button">
+			<span>&times;</span>
+		</button>
 	</div>
 	<div>
 		<form id="userForm" th:action="@{/registration}" method="post" th:object="${userEntity}">

@@ -45,7 +45,7 @@ public class CredentialService {
 			errorFields.add("Email");
 		}
 		
-		if (c.getPassword().length() > 0 || c.getPassword().length() > 35) {
+		if (c.getPassword().length() == 0 || c.getPassword().length() > 35) {
 			errorFields.add("Password");
 		}
 		
