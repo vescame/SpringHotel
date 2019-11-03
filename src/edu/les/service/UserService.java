@@ -2,12 +2,12 @@ package edu.les.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.les.entity.UserEntity;
-import edu.les.entity.UserRoleEntity;
 import edu.les.exception.ExceptionHandler;
 import edu.les.repository.UserRepository;
 
@@ -24,13 +24,21 @@ public class UserService {
 
 	public boolean add(UserEntity userEntity) throws ExceptionHandler {
 		boolean result = false;
-		try {
-			this.userRepository.save(userEntity);
-			result = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ExceptionHandler();
+		this.userRepository.save(userEntity);
+		result = true;
+		return result;
+	}
+	
+	public Optional<UserEntity> findByCpf(String cpf) {
+		return this.userRepository.findById(cpf);
+	}
+	
+	public boolean updateUser(UserEntity userEntity) throws ExceptionHandler {
+		boolean result = false;
+		if (hasErrors(userEntity)) {
+			return result;
 		}
+		result = this.userRepository.save(userEntity) != null;
 		return result;
 	}
 	
@@ -54,10 +62,9 @@ public class UserService {
 			errorFields.add("Name");
 		}
 
-		// TODO: validate user role entity only for admin user
-//		if (u.getUserRole() == null) {
-//			errorFields.add("User Role");
-//		}
+		if (u.getUserRole() == null) {
+			errorFields.add("User Role");
+		}
 
 		if (u.getHouseNumber() == 0) {
 			errorFields.add("House Number");

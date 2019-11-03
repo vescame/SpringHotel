@@ -1,0 +1,111 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Profile</title>
+</head>
+
+<body>
+	<nav>
+		<a href="home">Spring Hotel</a>
+		<div>
+			<ul>
+				<li>
+					<a href="logout">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<form id="frmProfile" action="#" th:action="@{/profile}" method="post" th:object="${userEntity}">
+		<div th:if="${PROFILE_STATUS}">
+			<h3>
+				<strong>Status</strong>
+			</h3>
+			<h4 th:text=${PROFILE_STATUS}></h4>
+			<button type="button">
+				<span>&times;</span>
+			</button>
+		</div>
+		<div>
+			<div>
+				<label>CPF</label>
+				<input th:field="*{userCpf}" maxlength="11" type="text" id="inputCpf" placeholder="CPF"
+					readonly="readonly">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Name</label>
+				<input th:field="*{username}" maxlength="35" type="text" id="txtUsername" placeholder="Name">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Zip</label>
+				<input th:field="*{addressEntity.zipCode}" maxlength="8" type="text" placeholder="ex.: 01001000"
+					id="txtZip">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Federal Unit</label> <input th:field="*{addressEntity.federalUnit}" type="text"
+					id="txtFederalUnit" placeholder="ex.: KS" readonly="readonly">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Street</label>
+				<input th:field="*{addressEntity.street}" type="text" id="txtStreet" placeholder="ex.: Walnut St"
+					readonly="readonly">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>District</label>
+				<input th:field="*{addressEntity.district}" type="text" id="txtDistrict" placeholder="ex.: Union Hill"
+					readonly="readonly">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>City</label> <input th:field="*{addressEntity.city}" type="text" id="txtCity"
+					placeholder="ex.: Kansas City" readonly="readonly">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>House Number</label>
+				<input th:field="*{houseNumber}" type="text" id="txtHouseNumber" placeholder="ex.: 443">
+			</div>
+			<div>
+				<label>Telephone</label>
+				<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555">
+			</div>
+			<div>
+				<label>Celphone</label>
+				<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555">
+			</div>
+			<div>
+				<label>Birthday</label>
+				<input th:field="*{dateOfBirth}" type="date" value="1990-01-01" id="txtDate">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Email</label>
+				<input th:field="*{credentialEntity.email}" maxlength="35" type="email" id="inputEmail4"
+					placeholder="Email">
+			</div>
+			<div>
+				<label>Password</label>
+				<input th:field="*{credentialEntity.password}" maxlength="35" type="password" id="inputPassword4"
+					placeholder="Password">
+			</div>
+		</div>
+		<div>
+			<button type="submit" name="btnAction" value="save">Save</button>
+		</div>
+	</form>
+</body>
+
+</html>
