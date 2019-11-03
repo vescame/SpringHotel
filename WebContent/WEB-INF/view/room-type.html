@@ -19,6 +19,61 @@
 			</ul>
 		</div>
 	</nav>
+	<form id="userForm" th:action="@{/room-type}" method="post" th:object="${roomCategoryEntity}">
+		<div>
+			<div>
+				<label>Id</label>
+				<input th:field="*{roomCategoryId}" maxlength="5" type="text" placeholder="ID">
+				<button type="submit" name="btnAction" value="search">Search</button>
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Category</label>
+				<input th:field="*{category}" maxlength="25" type="text" placeholder="Category">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Price</label>
+				<input th:field="*{price}" maxlength="5" type="text" placeholder="ex.: 45.55">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Number of People Allowed</label>
+				<input th:field="*{maxPeople}" maxlength="1" type="text" placeholder="ex.: 3">
+			</div>
+		</div>
+		<div>
+			<button type="submit" name="btnAction" value="save">Save</button>
+		</div>
+	</form>
+	<div>
+		<table th:unless="${#lists.isEmpty(roomCategoryList)}">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Category</th>
+					<th>Price</th>
+					<th>Max. People</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="b : ${roomCategoryList}">
+					<td th:text="${b.roomCategoryId}"/>
+					<td th:text="${b.category}"/>
+					<td th:text="${b.price}"/>
+					<td th:text="${b.maxPeople}"/>
+					<td>
+						<button type="button">
+									<span>&times;</span>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 
 </html>
