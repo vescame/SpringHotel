@@ -17,14 +17,7 @@ public class ExceptionHandler extends Exception {
 
 	public ExceptionHandler(List<String> fieldsWithError) {
 		this.fieldsWithError = fieldsWithError;
-		// TODO: Create an error message to be shown in the view status message
-		String prefix = "Fields with error: { ";
-		String fields = "";
-		for (String field : fieldsWithError) {
-			fields = fields.concat(field.concat(", "));
-		}
-		message = prefix.concat(fields).concat(" }");
-		this.message = fieldsWithError.toString();
+		this.message = "Fields with error: " + fieldsWithError.toString();
 	}
 
 	public ExceptionHandler(Exception sqlThrownException) {

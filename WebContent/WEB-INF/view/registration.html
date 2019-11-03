@@ -79,20 +79,11 @@
 			</ul>
 		</div>
 	</nav>
-	<div th:if="${FAILURE_STATUS}">
+	<div th:if="${STATUS_MESSAGE}">
 		<h3>
 			<strong>Status</strong>
 		</h3>
-		<h4 th:text=${FAILURE_STATUS}></h4>
-		<button type="button">
-			<span>&times;</span>
-		</button>
-	</div>
-	<div th:if="${SUCCESSFUL_STATUS}">
-		<h3>
-			<strong>Status</strong>
-		</h3>
-		<h4 th:text=${SUCCESSFUL_STATUS}></h4>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
 		<button type="button">
 			<span>&times;</span>
 		</button>
@@ -151,15 +142,15 @@
 				</div>
 				<div>
 					<label>Telephone</label>
-					<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555">
+					<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555" maxlength="15">
 				</div>
 				<div>
 					<label>Celphone</label>
-					<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555">
+					<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555" maxlength="15">
 				</div>
 				<div>
 					<label>Birthday</label>
-					<input th:field="*{dateOfBirth}" type="date" value="1990-01-01" id="txtDate">
+					<input th:field="*{dateOfBirth}" type="date" value="1990-01-01" id="txtDate" maxlength="10">
 				</div>
 			</div>
 			<div>

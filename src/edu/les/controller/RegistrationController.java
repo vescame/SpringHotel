@@ -21,17 +21,14 @@ public class RegistrationController {
 	private RegistrationService registrationService;
 	
 	private final String registerUrl = "/registration";
-	private final String failureStatusKey = "FAILURE_STATUS";
-	private final String successfulStatusKey = "SUCCESSFUL_STATUS";
+	private final String statusKey = "STATUS_MESSAGE";
 	private final String statusValueSuccess = "Usuario registrado com sucesso!";
-	private final String statusValueFailure = "Falha ao cadastrar usuario!";
 	private final String userEntityThObj = "userEntity";
 
 	@RequestMapping(value = registerUrl, method = RequestMethod.GET)
 	public ModelAndView registerView(Model model) {
 		ModelAndView modelAndView = new ModelAndView(this.registerUrl);
 		modelAndView.addObject(this.userEntityThObj, new UserEntity());
-		this.injectStatusCode(modelAndView, model);
 		return modelAndView;
 	}
 
@@ -41,19 +38,10 @@ public class RegistrationController {
 		ModelMap modelMap = new ModelMap();
 		try {
 			this.registrationService.registerUser(userEntity);
-			redirectAttributes.addFlashAttribute(this.successfulStatusKey, this.statusValueSuccess);
+			redirectAttributes.addFlashAttribute(this.statusKey, this.statusValueSuccess);
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.failureStatusKey, this.statusValueFailure);
-			// System.out.println(e.getMessage());
+			redirectAttributes.addFlashAttribute(this.statusKey, e.getMessage());
 		}
 		return new ModelAndView("redirect:" + this.registerUrl, modelMap);
-	}
-	
-	private void injectStatusCode(ModelAndView modelAndView, Model model) {
-		if (model.containsAttribute(this.successfulStatusKey)) {
-			modelAndView.addObject(this.successfulStatusKey, this.statusValueSuccess);
-		} else if (model.containsAttribute(this.failureStatusKey)) {
-			modelAndView.addObject(this.failureStatusKey, this.statusValueFailure);
-		}
 	}
 }
