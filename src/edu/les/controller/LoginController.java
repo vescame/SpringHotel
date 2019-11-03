@@ -12,15 +12,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.CredentialEntity;
 import edu.les.entity.UserEntity;
+import edu.les.security.SpringHotelSession;
 import edu.les.service.LoginService;
 
 @Controller
 public class LoginController {
 	@Autowired
 	LoginService loginService;
-
-//	@Autowired
-//	CredentialService credentialService;
 
 	private final String defaultUrlRedirectsLogin = "/";
 	private final String loginUrl = "/login";
@@ -51,9 +49,10 @@ public class LoginController {
 			RedirectAttributes redirAttr) {
 		ModelMap modelMap = new ModelMap();
 		String url = "redirect:" + this.loginUrl;
-		boolean canLogin = this.loginService.tryLogin(credentialEntity);
-		if (canLogin) {
+		UserEntity userSessionInstance = this.loginService.tryLogin(credentialEntity);
+		if (userSessionInstance != null) {
 			url = "redirect:" + this.homeUrl;
+			SpringHotelSession.loginUser(userSessionInstance);
 		} else {
 			redirAttr.addFlashAttribute(this.statusKey, this.statusValueInvalidCredentials);
 		}

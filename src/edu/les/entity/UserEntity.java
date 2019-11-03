@@ -118,7 +118,7 @@ public class UserEntity {
 	}
 
 	@Embedded
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.ALL)
 	@JoinColumn(name = "zip_code")
 	public AddressEntity getAddressEntity() {

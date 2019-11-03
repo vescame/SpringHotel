@@ -28,7 +28,7 @@ public class UserService {
 
 	DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	public void add(UserEntity userEntity) throws ExceptionHandler {
+	public void addOrUpdate(UserEntity userEntity) throws ExceptionHandler {
 		if (!this.hasErrors(userEntity)) {
 			this.userRepository.save(userEntity);
 		}
@@ -37,14 +37,9 @@ public class UserService {
 	public Optional<UserEntity> findByCpf(String cpf) {
 		return this.userRepository.findById(cpf);
 	}
-
-	public boolean updateUser(UserEntity userEntity) throws ExceptionHandler {
-		boolean result = false;
-		if (hasErrors(userEntity)) {
-			return result;
-		}
-		result = this.userRepository.save(userEntity) != null;
-		return result;
+	
+	public Optional<UserEntity> findByCredential(int credId) {
+		return this.userRepository.findByCredential(credId);
 	}
 
 	public Iterable<UserEntity> fetchAll() {

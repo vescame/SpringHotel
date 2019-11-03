@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
@@ -24,35 +25,29 @@ public class ProfileController {
 	@Autowired
 	UserService userService;
 
-	private final String profileUrl = "/profile";
+	private final String viewUrl = "/profile";
 	private final String statusKey = "PROFILE_STATUS";
 
-	@RequestMapping(value = profileUrl, method = RequestMethod.GET)
+	@RequestMapping(value = viewUrl, method = RequestMethod.GET)
 	public ModelAndView loginView(Model model) {
-		ModelAndView modelAndView = new ModelAndView("profile");
+		ModelAndView modelAndView = new ModelAndView(this.viewUrl);
 		Optional<UserEntity> user = this.userService.findByCpf(SpringHotelSession.getLoggedInUser().getUserCpf());
 		if (user.isPresent()) {
-			modelAndView.addObject("userEntity", null);
+			modelAndView.addObject("userEntity", user.get());
 		} else {
 			throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return modelAndView;
 	}
 
-	@RequestMapping(value = profileUrl, method = RequestMethod.POST)
-	public ModelAndView loginView(@ModelAttribute() UserEntity userEntity, HttpServletRequest request, Model model) {
-		ModelAndView modelAndView = new ModelAndView("profile");
+	@RequestMapping(value = viewUrl, params = "save", method = RequestMethod.POST)
+	public ModelAndView loginView(@ModelAttribute() UserEntity userEntity, HttpServletRequest request,
+			RedirectAttributes redir) {
 		try {
-			if (request.getAttribute("btnAction").equals("save")) {
-				this.userService.updateUser(userEntity);
-			}
+			this.userService.addOrUpdate(userEntity);
 		} catch (ExceptionHandler e) {
-			this.injectErrorMessage(modelAndView, e.getMessage());
+			redir.addFlashAttribute(statusKey, e.getMessage());
 		}
-		return modelAndView;
-	}
-	
-	private void injectErrorMessage(ModelAndView modelAndView, String message) {
-		modelAndView.addObject(statusKey, message);
+		return new ModelAndView("redirect:" + this.viewUrl);
 	}
 }
