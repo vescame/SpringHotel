@@ -3,6 +3,14 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Room Types</title>
+	<style>
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			padding: 5px;
+		}
+	</style>
 </head>
 
 <body>
@@ -19,12 +27,21 @@
 			</ul>
 		</div>
 	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
+		<!-- <button type="button">
+			<span>&times;</span>
+		</button> -->
+	</div>
 	<form id="userForm" th:action="@{/room-type}" method="post" th:object="${roomCategoryEntity}">
 		<div>
 			<div>
 				<label>Id</label>
 				<input th:field="*{roomCategoryId}" maxlength="5" type="text" placeholder="ID">
-				<button type="submit" name="btnAction" value="search">Search</button>
+				<button type="submit" name="search">Search</button>
 			</div>
 		</div>
 		<div>
@@ -46,7 +63,7 @@
 			</div>
 		</div>
 		<div>
-			<button type="submit" name="btnAction" value="save">Save</button>
+			<button type="submit" name="save">Save</button>
 		</div>
 	</form>
 	<div>

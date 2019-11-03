@@ -2,6 +2,7 @@ package edu.les.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class RoomCategoryService {
 		return this.roomCategoryRepository.findAll();
 	}
 	
-	public void add(RoomCategoryEntity roomCategoryEntity) throws ExceptionHandler {
+	public void addOrUpdate(RoomCategoryEntity roomCategoryEntity) throws ExceptionHandler {
 		if (!this.hasErrors(roomCategoryEntity)) {
 			this.roomCategoryRepository.save(roomCategoryEntity);
 		}
@@ -45,5 +46,9 @@ public class RoomCategoryService {
 		}
 		
 		return result;
+	}
+
+	public Optional<RoomCategoryEntity> findById(int id) throws ExceptionHandler {
+		return this.roomCategoryRepository.findById(id);
 	}
 }
