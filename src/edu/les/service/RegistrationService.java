@@ -16,13 +16,8 @@ public class RegistrationService {
 
 	public boolean hasErrors(UserEntity userEntity) throws ExceptionHandler {
 		boolean result = true;
-		List<String> errorFields = new ArrayList<String>();
-		try {
-			if (!userService.hasErrors(userEntity)) {
-				result = false;
-			}
-		} catch (Exception e) {
-			throw new ExceptionHandler(errorFields);
+		if (!userService.hasErrors(userEntity)) {
+			result = false;
 		}
 		return result;
 	}
