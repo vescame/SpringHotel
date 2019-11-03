@@ -14,13 +14,13 @@ import edu.les.repository.UserRepository;
 @Service
 public class UserService {
 	@Autowired
-	public UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	public AddressService addressService;
+	private AddressService addressService;
 
 	@Autowired
-	public CredentialService credentialService;
+	private CredentialService credentialService;
 
 	public boolean add(UserEntity userEntity) throws ExceptionHandler {
 		boolean result = false;
