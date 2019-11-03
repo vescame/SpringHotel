@@ -28,11 +28,10 @@ public class UserService {
 
 	DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	public boolean add(UserEntity userEntity) throws ExceptionHandler {
-		boolean result = false;
-		this.userRepository.save(userEntity);
-		result = true;
-		return result;
+	public void add(UserEntity userEntity) throws ExceptionHandler {
+		if (!this.hasErrors(userEntity)) {
+			this.userRepository.save(userEntity);
+		}
 	}
 
 	public Optional<UserEntity> findByCpf(String cpf) {
