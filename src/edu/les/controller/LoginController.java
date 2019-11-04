@@ -59,9 +59,10 @@ public class LoginController {
 		return new ModelAndView(url, modelMap);
 	}
 
-	@RequestMapping(value = logoutUrl, method = RequestMethod.POST)
-	public ModelAndView logoutUser(@ModelAttribute("userEntity") UserEntity userEntity) {
+	@RequestMapping(value = logoutUrl, method = RequestMethod.GET)
+	public ModelAndView logoutUser() {
 		ModelMap modelMap = new ModelMap();
+		SpringHotelSession.logoutUser();
 		return new ModelAndView("redirect:" + this.loginUrl, modelMap);
 	}
 
