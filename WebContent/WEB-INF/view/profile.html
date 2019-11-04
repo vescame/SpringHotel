@@ -140,11 +140,11 @@
 			</div>
 			<div>
 				<label>Telephone</label>
-				<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555">
+				<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555" maxlength="15">
 			</div>
 			<div>
 				<label>Celphone</label>
-				<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555">
+				<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555" maxlength="15">
 			</div>
 			<div>
 				<label>Birthday</label>
@@ -155,12 +155,7 @@
 			<div>
 				<label>Email</label>
 				<input th:field="*{credentialEntity.email}" maxlength="35" type="email" id="inputEmail4"
-					placeholder="Email">
-			</div>
-			<div>
-				<label>Password</label>
-				<input th:field="*{credentialEntity.password}" maxlength="35" type="password" id="inputPassword4"
-					placeholder="Password">
+					placeholder="Email" readonly="readonly">
 			</div>
 		</div>
 		<div>

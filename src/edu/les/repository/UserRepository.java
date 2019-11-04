@@ -11,6 +11,6 @@ import edu.les.entity.UserEntity;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, String> {
-	@Query("FROM hotel_user where credential_id = :v_cred_id")
-	public Optional<UserEntity> findByCredential(@Param("v_cred_id") int credId);
+	@Query("FROM hotel_user where email = :v_email")
+	public Optional<UserEntity> findByCredential(@Param("v_email") String email);
 }

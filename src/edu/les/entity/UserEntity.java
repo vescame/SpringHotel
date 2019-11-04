@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -24,7 +23,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class UserEntity {
 	private String userCpf;
 	private String username;
-	private UserRoleEntity userRole;
+	private String userRole;
 	private int houseNumber;
 	private String telephoneNumber;
 	private String celphoneNumber;
@@ -34,10 +33,7 @@ public class UserEntity {
 	private CredentialEntity credentialEntity;
 
 	public UserEntity() {
-		UserRoleEntity userRole = new UserRoleEntity();
-		userRole.setId(1);
-		userRole.setRoleDescription("Usuario");
-		this.userRole = userRole;
+		this.userRole = "USER";
 	}
 	
 	@Id
@@ -59,15 +55,13 @@ public class UserEntity {
 		this.username = username;
 	}
 	
-	@Embedded
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "role_id")
-	public UserRoleEntity getUserRole() {
+	@Column(name = "user_role", nullable = false, length = 15)
+	public String getUserRole() {
 		return userRole;
 	}
 
-	public void setUserRole(UserRoleEntity userRoleId) {
-		this.userRole = userRoleId;
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
 	}
 
 	@Column(name = "house_number", nullable = false)
@@ -117,7 +111,6 @@ public class UserEntity {
 		this.status = Character.toUpperCase(status);
 	}
 
-	@Embedded
 	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.ALL)
 	@JoinColumn(name = "zip_code")
@@ -129,10 +122,9 @@ public class UserEntity {
 		this.addressEntity = addressEntity;
 	}
 
-	@Embedded
 	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.ALL)
-	@JoinColumn(name = "credential_id")
+	@JoinColumn(name = "email")
 	public CredentialEntity getCredentialEntity() {
 		return credentialEntity;
 	}

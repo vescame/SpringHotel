@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
 import edu.les.repository.UserRepository;
+import edu.les.security.SpringHotelSession;
 
 @Service
 public class UserService {
@@ -28,7 +29,15 @@ public class UserService {
 
 	DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	public void addOrUpdate(UserEntity userEntity) throws ExceptionHandler {
+	public void Add(UserEntity userEntity) throws ExceptionHandler {
+		if (!this.hasErrors(userEntity)) {
+			this.userRepository.save(userEntity);
+		}
+	}
+	
+	public void update (UserEntity userEntity) throws ExceptionHandler {
+		// credentials are not updated under profile.html view
+		userEntity.setCredentialEntity(SpringHotelSession.getLoggedInUser().getCredentialEntity());
 		if (!this.hasErrors(userEntity)) {
 			this.userRepository.save(userEntity);
 		}
@@ -37,9 +46,9 @@ public class UserService {
 	public Optional<UserEntity> findByCpf(String cpf) {
 		return this.userRepository.findById(cpf);
 	}
-	
-	public Optional<UserEntity> findByCredential(int credId) {
-		return this.userRepository.findByCredential(credId);
+
+	public Optional<UserEntity> findByEmail(String email) {
+		return this.userRepository.findByCredential(email);
 	}
 
 	public Iterable<UserEntity> fetchAll() {
@@ -62,7 +71,7 @@ public class UserService {
 			errorFields.add("Name");
 		}
 
-		if (u.getUserRole() == null) {
+		if (u.getUserRole() == null || u.getUserRole().isEmpty()) {
 			errorFields.add("User Role");
 		}
 
@@ -86,7 +95,7 @@ public class UserService {
 
 		// TODO: check if is needed to validate user status
 		// because it is hardcoded at the register
-		
+
 		try {
 			// catch exception gotten inside those classes
 			// no need to receive boolean results

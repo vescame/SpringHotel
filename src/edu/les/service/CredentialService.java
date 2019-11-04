@@ -41,11 +41,11 @@ public class CredentialService {
 			return result;
 		}
 		
-		if (c.getEmail().length() == 0 || c.getEmail().length() > 35) {
+		if (c == null || c.getEmail().length() == 0 || c.getEmail().length() > 35) {
 			errorFields.add("Email");
 		}
 		
-		if (c.getPassword().length() == 0 || c.getPassword().length() > 35) {
+		if (c == null || c.getPassword().length() == 0 || c.getPassword().length() > 35) {
 			errorFields.add("Password");
 		}
 		

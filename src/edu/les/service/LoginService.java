@@ -18,8 +18,8 @@ public class LoginService {
 
 	public UserEntity tryLogin(CredentialEntity credentialEntity) {
 		CredentialEntity c = credentialService.fetch(credentialEntity);
-		Optional<UserEntity> userEntity= this.userService.findByCredential(c.getCredentialId());
 		if (c != null && c.equals(credentialEntity)) {
+			Optional<UserEntity> userEntity= this.userService.findByEmail(c.getEmail());
 			if (userEntity.isPresent()) {
 				return userEntity.get();
 			}

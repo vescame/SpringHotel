@@ -20,7 +20,7 @@ public class HomeController {
 	@RequestMapping(value = viewUrl, method = RequestMethod.GET)
 	public ModelAndView loginView(Model model) {
 		ModelAndView modelAndView = new ModelAndView(this.viewUrl);
-		final String roleDesc = SpringHotelSession.getLoggedInUser().getUserRole().getRoleDescription();
+		final String roleDesc = SpringHotelSession.getLoggedInUser().getUserRole();
 		if (roleDesc.equals("ADMINISTRATOR") || roleDesc.equals("EMPLOYEE")) {
 			modelAndView.addObject("IS_AUTHORIZED");
 		}

@@ -1,7 +1,5 @@
 package edu.les.controller;
 
-import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +29,9 @@ public class ProfileController {
 	@RequestMapping(value = viewUrl, method = RequestMethod.GET)
 	public ModelAndView loginView(Model model) {
 		ModelAndView modelAndView = new ModelAndView(this.viewUrl);
-		Optional<UserEntity> user = this.userService.findByCpf(SpringHotelSession.getLoggedInUser().getUserCpf());
-		if (user.isPresent()) {
-			modelAndView.addObject("userEntity", user.get());
+		UserEntity user = SpringHotelSession.getLoggedInUser();
+		if (user != null) {
+			modelAndView.addObject("userEntity", user);
 		} else {
 			throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,7 +42,9 @@ public class ProfileController {
 	public ModelAndView loginView(@ModelAttribute() UserEntity userEntity, HttpServletRequest request,
 			RedirectAttributes redir) {
 		try {
-			this.userService.addOrUpdate(userEntity);
+			this.userService.update(userEntity);
+			redir.addFlashAttribute(this.statusKey,
+					"Your profile have been updated, logout and login to apply changes to the system.");
 		} catch (ExceptionHandler e) {
 			redir.addFlashAttribute(statusKey, e.getMessage());
 		}
