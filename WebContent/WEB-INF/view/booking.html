@@ -26,6 +26,64 @@
 			</ul>
 		</div>
 	</nav>
+	<form id="frmReserva" action="#" th:action="@{/booking}" method="post" th:object="${bookingEntity}">
+	<div>
+		<div>
+			<label>Name</label>
+			<input th:field="*{username}" maxlength="35" type="text" id="txtUsername" placeholder="Name">
+		</div>
+	</div>
+	<div>
+		<div>
+			<label>CPF</label>
+			<input th:field="*{userCpf}" maxlength="11" type="text" id="inputCpf" placeholder="CPF">
+		</div>
+	</div>
+	<div>
+		<label>Telephone</label>
+		<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555">
+	</div>
+	<div>
+		<label>Celphone</label>
+		<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555">
+	</div>
+	<div>
+		<label>Birthday</label>
+		<input th:field="*{dateOfBirth}" type="date" value="1990-01-01" id="txtDate">
+	</div>
+	<div>
+		<label>Check-in</label>
+		<input th:field="*{Checkin}" type="date" value="2019-11-01" id="txtDate">
+	</div>
+</form>
+<div>
+	<table th:unless="${#lists.isEmpty(bookingEntityList)}">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>CPF</th>
+				<th>Telephone</th>
+				<th>Celphone</th>
+				<th>Birthday</th>
+				<th>Check-in</th>
+			</tr>
+		</thead>
+		<tbody>
+		<tr th:each="b : ${bookingEntityList}">
+			<td th:text="${b.username}"/>
+			<td th:text="${b.userCpf}"/>
+			<td th:text="${b.telephoneNumber}"/>
+			<td th:text="${b.celphoneNumber}"/>
+			<td th:text="${b.dateOfBirth}"/>
+			<td th:text="${b.Checkin}"/>
+			<td>
+				<button type="button">
+							<span>&times;</span>
+				</button>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
 </body>
-
 </html>
