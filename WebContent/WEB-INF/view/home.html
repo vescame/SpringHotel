@@ -8,8 +8,8 @@
 	<nav>
 		<a href="home">Spring Hotel</a>
 		<div>
-			<ul>
-				<li >
+			<ul th:if="${IS_AUTHORIZED}">
+				<li>
 					<a href="booking">Bookings</a>
 				</li>
 				<li>
