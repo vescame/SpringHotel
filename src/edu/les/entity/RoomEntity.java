@@ -36,7 +36,7 @@ public class RoomEntity {
 		this.roomNumber = roomNumber;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "room_category_id")
 	public RoomCategoryEntity getRoomCategory() {
 		return roomCategory;

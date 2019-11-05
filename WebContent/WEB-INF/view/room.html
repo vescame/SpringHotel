@@ -3,12 +3,20 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Room</title>
+	<style>
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			padding: 5px;
+		}
+	</style>
 </head>
 
 <body>
 	<nav>
 		<a href="home">Spring Hotel</a>
-		<div id="navbarNav">
+		<div>
 			<ul>
 				<li>
 					<a href="room-type">Room Types</a>
@@ -24,6 +32,80 @@
 			</ul>
 		</div>
 	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
+		<!-- <button type="button">
+			<span>&times;</span>
+		</button> -->
+	</div>
+	<form id="userForm" th:action="@{/room}" method="post" th:object="${roomEntity}">
+		<div>
+			<div>
+				<label>Id</label>
+				<input th:field="*{roomId}" maxlength="5" type="text" placeholder="ID">
+				<button type="submit" name="search">Search</button>
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Room Number</label>
+				<input th:field="*{roomNumber}" maxlength="3" type="text" placeholder="ex.: 34">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Category</label>
+				<ul>
+					<li th:each="c : ${categorias}">
+						<input th:field="*{roomCategory.category}" type="radio" th:value="${c.category}"
+							th:text="${c.category}" />
+						<label> ID: </label>
+						<label th:text="${c.roomCategoryId}"></label>
+						<label> Price: </label>
+						<label th:text="${c.price}"></label>
+						<label> Max. People: </label>
+						<label th:text="${c.maxPeople}"></label>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div>
+			<button type="submit" name="save">Save</button>
+		</div>
+	</form>
+	<div>
+		<form id="deleteForm" th:action="@{/room}" method="post">
+			<table th:unless="${#lists.isEmpty(roomList)}">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Room Number</th>
+					<th>Category</th>
+					<th>Price</th>
+					<th>Max. People</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="b : ${roomList}">
+					<td th:text="${b.roomId}"/>
+					<td th:text="${b.roomNumber}"/>
+					<td th:text="${b.roomCategory.category}"/>
+					<td th:text="${b.roomCategory.price}"/>
+					<td th:text="${b.roomCategory.maxPeople}"/>
+					<td>
+						<input type="hidden" th:value="${b.roomId}" />
+						<button type="submit" name="delete">
+							<span>&times;</span>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+			</table>
+		</form>
+	</div>
 </body>
 
 </html>

@@ -51,4 +51,8 @@ public class RoomCategoryService {
 	public Optional<RoomCategoryEntity> findById(int id) throws ExceptionHandler {
 		return this.roomCategoryRepository.findById(id);
 	}
+
+	public RoomCategoryEntity fetchByCategory(String category) {
+		return this.roomCategoryRepository.fetchByCategory(category);
+	}
 }
