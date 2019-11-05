@@ -26,7 +26,7 @@ public class RegistrationService {
 		// o hibernate faz isso para nos
 		boolean hasAny = this.hasErrors(userEntity);
 		if (!hasAny) {
-			this.userService.update(userEntity);
+			this.userService.Add(userEntity);
 		} else {
 			return;
 		}
