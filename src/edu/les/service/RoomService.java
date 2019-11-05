@@ -58,4 +58,10 @@ public class RoomService {
 
 		return result;
 	}
+
+	public Iterable<RoomEntity> fetchDisponible() {
+		Iterable<RoomEntity> all = this.roomRepository.findAll();
+//		List<RoomEntity> disp = new ArrayList<RoomEntity>();
+		return all;
+	}
 }

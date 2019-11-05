@@ -25,7 +25,13 @@ public class BookingEntity {
 	private Date checkIn;
 	private Date checkOut;
 	private float finalAmout;
-	private char bookingStatus = 'A';
+	private String status = "A";
+	private int daysPast;
+
+	public BookingEntity() {
+		this.checkIn = new Date();
+		this.daysPast(this.getCheckIn());
+	}
 
 	@Id
 	@GeneratedValue
@@ -38,7 +44,7 @@ public class BookingEntity {
 		this.bookingId = bookingId;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_cpf")
 	public UserEntity getUserEntity() {
 		return userEntity;
@@ -48,7 +54,7 @@ public class BookingEntity {
 		this.userEntity = userEntity;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "room_id")
 	public RoomEntity getRoomEntity() {
 		return roomEntity;
@@ -83,7 +89,7 @@ public class BookingEntity {
 	@Transient
 	public float getFinalAmout() {
 		float pricePerDay = this.roomEntity.getRoomCategory().getPrice();
-		int days = this.daysPast(this.getCheckIn());
+		int days = this.daysPast;
 		finalAmout = pricePerDay * days;
 		return finalAmout;
 	}
@@ -92,13 +98,22 @@ public class BookingEntity {
 		this.finalAmout = finalAmout;
 	}
 
-	@Column(name = "status", nullable = false)
-	public char getBookingStatus() {
-		return bookingStatus;
+	@Column(name = "status", nullable = false, length = 1)
+	public String getStatus() {
+		return status;
 	}
 
-	public void setBookingStatus(char bookingStatus) {
-		this.bookingStatus = bookingStatus;
+	public void setStatus(String bookingStatus) {
+		this.status = bookingStatus;
+	}
+	
+	@Transient
+	public int getDaysPast() {
+		return this.daysPast(this.getCheckIn());
+	}
+
+	public void setDaysPast(int daysPast) {
+		this.daysPast = daysPast;
 	}
 
 	private int daysPast(Date checkin) {
