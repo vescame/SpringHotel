@@ -84,9 +84,6 @@
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${STATUS_MESSAGE}></h4>
-		<button type="button">
-			<span>&times;</span>
-		</button>
 	</div>
 	<div>
 		<form id="userForm" th:action="@{/registration}" method="post" th:object="${userEntity}">
