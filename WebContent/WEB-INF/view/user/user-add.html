@@ -68,7 +68,7 @@
 
 <body>
 	<nav>
-		<a href="home">Spring Hotel</a>
+		<a th:href="@{/home}">Spring Hotel</a>
 		<div>
 			<ul th:if="${IS_ADMIN}">
 				<li>
@@ -83,10 +83,10 @@
 			</ul>
 			<ul>
 				<li>
-					<a href="profile">Profile</a>
+					<a th:href="@{/profile}">Profile</a>
 				</li>
 				<li>
-					<a href="logout">Logout</a>
+					<a th:href="@{/logout}">Logout</a>
 				</li>
 			</ul>
 		</div>

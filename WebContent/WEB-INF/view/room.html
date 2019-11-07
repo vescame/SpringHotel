@@ -15,19 +15,17 @@
 
 <body>
 	<nav>
-		<a href="home">Spring Hotel</a>
+		<a th:href="@{/home}">Spring Hotel</a>
 		<div>
 			<ul>
 				<li>
-					<a href="room-type">Room Types</a>
-				</li>
-			</ul>
-			<ul>
-				<li>
-					<a href="profile">Profile</a>
+					<a th:href="@{/room-type}">Room Types</a>
 				</li>
 				<li>
-					<a href="logout">Logout</a>
+					<a th:href="@{/profile}">Profile</a>
+				</li>
+				<li>
+					<a th:href="@{/logout}">Logout</a>
 				</li>
 			</ul>
 		</div>
@@ -37,9 +35,6 @@
 			<strong>Status</strong>
 		</h3>
 		<h4 th:text=${STATUS_MESSAGE}></h4>
-		<!-- <button type="button">
-			<span>&times;</span>
-		</button> -->
 	</div>
 	<form id="userForm" th:action="@{/room}" method="post" th:object="${roomEntity}">
 		<div>

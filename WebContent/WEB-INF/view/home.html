@@ -4,27 +4,29 @@
 	<meta charset="ISO-8859-1">
 	<title>Home</title>
 </head>
+
 <body>
 	<nav>
-		<a href="home">Spring Hotel</a>
+		<a th:href="@{/home}">Spring Hotel</a>
 		<div>
-			<ul th:if="${IS_AUTHORIZED}">
+			<ul>
+				<div th:if="${IS_ADMIN}">
+					<li>
+						<a th:href="@{/booking}">Bookings</a>
+					</li>
+					<li>
+						<a th:href="@{/user/user-add}">Users</a>
+					</li>
+				</div>
 				<li>
-					<a href="booking">Bookings</a>
+					<a th:href="@{/profile}">Profile</a>
 				</li>
 				<li>
-					<a href="user">Users</a>
-				</li>
-			</ul>
-			<ul >
-				<li>
-					<a href="profile">Profile</a>
-				</li>
-				<li>
-					<a href="logout">Logout</a>
+					<a th:href="@{/logout}">Logout</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
 </body>
+
 </html>
