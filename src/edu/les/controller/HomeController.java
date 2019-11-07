@@ -22,7 +22,7 @@ public class HomeController {
 		ModelAndView modelAndView = new ModelAndView(this.viewUrl);
 		final String roleDesc = SpringHotelSession.getLoggedInUser().getUserRole();
 		if (roleDesc.equals("ADMINISTRATOR") || roleDesc.equals("EMPLOYEE")) {
-			modelAndView.addObject("IS_AUTHORIZED");
+			modelAndView.addObject("IS_ADMIN");
 		}
 		return modelAndView;
 	}
