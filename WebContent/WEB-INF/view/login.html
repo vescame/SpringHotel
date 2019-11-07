@@ -16,13 +16,13 @@
 			</ul>
 		</div>
 	</nav>
-	<form id="loginForm" th:action="@{/login}" method="post" th:object="${credentialEntity}">
+	<form id="loginForm" th:action="@{/login}" method="post" th:object="${userEntity}">
 		<div>
-			<div th:if="${LOGIN_STATUS}">
+			<div th:if="${STATUS_MESSAGE}">
 				<h3>
 					<strong>Status</strong>
 				</h3>
-				<h4 th:text=${LOGIN_STATUS}></h4>
+				<h4 th:text=${STATUS_MESSAGE}></h4>
 			</div>
 			<div>
 				<label>Email</label> <input th:field="*{email}" maxlength="35" id="txtUsername"

@@ -1,0 +1,48 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>User Delete</title>
+</head>
+
+<body>
+	<nav>
+		<a href="home">Spring Hotel</a>
+		<div>
+			<ul th:if="${IS_ADMIN}">
+				<li>
+					<a th:href="@{/user/user-add}">Add User</a>
+				</li>
+				<li>
+					<a th:href="@{/user/user-search}">Search User</a>
+				</li>
+				<li>
+					<a th:href="@{/user/user-update}">Update User</a>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<a href="profile">Profile</a>
+				</li>
+				<li>
+					<a href="logout">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
+	</div>
+	<form th:action="@{/user/user-delete}" method="post">
+		<div>
+			<label for="inputCpf">CPF</label>
+			<input id="inputCpf" maxlength="11" type="text" name="userCpf" placeholder="CPF">
+			<button type="submit">Delete</button>
+		</div>
+	</form>
+</body>
+
+</html>

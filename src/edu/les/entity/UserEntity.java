@@ -30,8 +30,9 @@ public class UserEntity {
 	private Date dateOfBirth;
 	private char status = 'A';
 	private AddressEntity addressEntity;
-	private CredentialEntity credentialEntity;
-
+	private String email;
+	private String password;
+	
 	public UserEntity() {
 		this.userRole = "USER";
 	}
@@ -122,15 +123,22 @@ public class UserEntity {
 		this.addressEntity = addressEntity;
 	}
 
-	@OneToOne(fetch = FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
-	@JoinColumn(name = "email")
-	public CredentialEntity getCredentialEntity() {
-		return credentialEntity;
+	@Column(name = "email", nullable = false, length = 35)
+	public String getEmail() {
+		return email;
 	}
 
-	public void setCredentialEntity(CredentialEntity credentialEntity) {
-		this.credentialEntity = credentialEntity;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "password", nullable = false, length = 35)
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

@@ -12,7 +12,11 @@ public class ExceptionHandler extends Exception {
 	private List<String> fieldsWithError;
 
 	public ExceptionHandler() {
-		message = super.getMessage();
+		this.message = super.getMessage();
+	}
+	
+	public ExceptionHandler(String message) {
+		this.message = message;
 	}
 
 	public ExceptionHandler(List<String> fieldsWithError) {

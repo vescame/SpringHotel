@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
 import edu.les.repository.UserRepository;
-import edu.les.security.SpringHotelSession;
 
 @Service
 public class UserService {
@@ -24,35 +24,48 @@ public class UserService {
 	@Autowired
 	private AddressService addressService;
 
-	@Autowired
-	private CredentialService credentialService;
-
 	DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	public void Add(UserEntity userEntity) throws ExceptionHandler {
-		if (!this.hasErrors(userEntity)) {
-			this.userRepository.save(userEntity);
-		}
-	}
-	
-	public void update (UserEntity userEntity) throws ExceptionHandler {
-		// credentials are not updated under profile.html view
-		userEntity.setCredentialEntity(SpringHotelSession.getLoggedInUser().getCredentialEntity());
+	public void add(UserEntity userEntity) throws ExceptionHandler {
 		if (!this.hasErrors(userEntity)) {
 			this.userRepository.save(userEntity);
 		}
 	}
 
-	public Optional<UserEntity> findByCpf(String cpf) {
-		return this.userRepository.findById(cpf);
+	public void update(UserEntity userEntityUpdated) throws ExceptionHandler {
+		if (!this.hasErrors(userEntityUpdated)) {
+			this.userRepository.save(userEntityUpdated);
+		}
 	}
 
-	public Optional<UserEntity> findByEmail(String email) {
-		return this.userRepository.findByCredential(email);
+	public UserEntity findById(String userCpf) throws ExceptionHandler {
+		if (userCpf.length() != 11) {
+			throw new ExceptionHandler("Invalid CPF");
+		}
+		Optional<UserEntity> u = this.userRepository.findById(userCpf);
+		if (!u.isPresent()) {
+			throw new ExceptionHandler("User not found!");
+		}
+		return u.get();
+	}
+
+	public void delete(String userCpf) throws ExceptionHandler {
+		if (userCpf.length() != 11) {
+			throw new ExceptionHandler("Invalid CPF");
+		}
+		try {
+			this.userRepository.deleteById(userCpf);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ExceptionHandler("User not found!");
+		}
 	}
 
 	public Iterable<UserEntity> fetchAll() {
 		return this.userRepository.findAll();
+	}
+	
+	public Optional<UserEntity> fetchLogin(String email, String password) {
+		return this.userRepository.findByCredential(email, password);
 	}
 
 	public boolean hasErrors(UserEntity u) throws ExceptionHandler {
@@ -63,7 +76,7 @@ public class UserService {
 			return result;
 		}
 
-		if (u.getUserCpf().length() == 0 || u.getUserCpf().length() != 11) {
+		if (u.getUserCpf().length() != 11) {
 			errorFields.add("CPF");
 		}
 
@@ -93,6 +106,14 @@ public class UserService {
 			}
 		}
 
+		if (u.getEmail().length() == 0 || u.getEmail().length() > 35) {
+			errorFields.add("E-mail");
+		}
+
+		if (u.getPassword().length() == 0 || u.getPassword().length() < 6 || u.getPassword().length() > 35) {
+			errorFields.add("Password");
+		}
+
 		// TODO: check if is needed to validate user status
 		// because it is hardcoded at the register
 
@@ -100,7 +121,6 @@ public class UserService {
 			// catch exception gotten inside those classes
 			// no need to receive boolean results
 			this.addressService.hasErrors(u.getAddressEntity());
-			this.credentialService.hasErrors(u.getCredentialEntity());
 		} catch (ExceptionHandler h) {
 			errorFields.addAll(h.getErrors());
 		}

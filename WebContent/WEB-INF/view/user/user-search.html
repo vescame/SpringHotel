@@ -1,0 +1,118 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>User Search</title>
+	<style>
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			padding: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<nav>
+		<a href="home">Spring Hotel</a>
+		<div>
+			<ul th:if="${IS_ADMIN}">
+				<li>
+					<a th:href="@{/user/user-add}">Add User</a>
+				</li>
+				<li>
+					<a th:href="@{/user/user-update}">Update User</a>
+				</li>
+				<li>
+					<a th:href="@{/user/user-delete}">Delete User</a>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<a href="profile">Profile</a>
+				</li>
+				<li>
+					<a href="logout">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
+	</div>
+	<form th:action="@{/user/user-search}" method="post">
+		<div>
+			<label for="inputCpf">CPF</label>
+			<input id="inputCpf" maxlength="11" type="text" name="userCpf" placeholder="CPF">
+			<button type="submit">Search</button>
+		</div>
+	</form>
+	<div th:if="${userEntity}">
+		<h3>User</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>CPF</th>
+					<th>Name</th>
+					<th>Zip</th>
+					<th>House Number</th>
+					<th>Telephone</th>
+					<th>Celphone</th>
+					<th>Birthday</th>
+					<th>Email</th>
+					<th>Role</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:object="${userEntity}">
+					<td th:text="*{userCpf}" />
+					<td th:text="*{username}" />
+					<td th:text="*{addressEntity.zipCode}" />
+					<td th:text="*{houseNumber}" />
+					<td th:text="*{telephoneNumber}" />
+					<td th:text="*{celphoneNumber}" />
+					<td th:text="*{dateOfBirth}" />
+					<td th:text="*{email}" />
+					<td th:text="*{userRole}" />
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<h3>All Users</h3>
+		<table th:unless="${#lists.isEmpty(userEntityList)}">
+			<thead>
+				<tr>
+					<th>CPF</th>
+					<th>Name</th>
+					<th>Zip</th>
+					<th>House Number</th>
+					<th>Telephone</th>
+					<th>Celphone</th>
+					<th>Birthday</th>
+					<th>Email</th>
+					<th>Role</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="b : ${userEntityList}">
+					<td th:text="${b.userCpf}"/>
+					<td th:text="${b.username}"/>
+					<td th:text="${b.addressEntity.zipCode}"/>
+					<td th:text="${b.houseNumber}"/>
+					<td th:text="${b.telephoneNumber}"/>
+					<td th:text="${b.celphoneNumber}"/>
+					<td th:text="${b.dateOfBirth}"/>
+					<td th:text="${b.email}"/>
+					<td th:text="${b.userRole}"/>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>

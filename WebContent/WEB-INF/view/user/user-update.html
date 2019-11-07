@@ -2,7 +2,7 @@
 
 <head>
 	<meta charset="ISO-8859-1">
-	<title>Profile</title>
+	<title>User Update</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function () {
@@ -45,7 +45,7 @@
 								$("#txtDistrict").val(dados.bairro);
 								$("#txtCity").val(dados.localidade);
 								$("#txtFederalUnit").val(dados.uf);
-							} //end if.
+							}
 							else {
 								//CEP pesquisado nao foi encontrado.
 								limpa_formulario_cep();
@@ -71,31 +71,54 @@
 		<a href="home">Spring Hotel</a>
 		<div>
 			<ul>
+				<ul th:if="${IS_ADMIN}">
+					<li>
+						<a th:href="@{/user/user-add}">Add User</a>
+					</li>
+					<li>
+						<a th:href="@{/user/user-search}">Search User</a>
+					</li>
+					<li>
+						<a th:href="@{/user/user-delete}">Delete User</a>
+					</li>
+				</ul>
+				<li>
+					<a href="profile">Profile</a>
+				</li>
 				<li>
 					<a href="logout">Logout</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
-	<div th:if="${PROFILE_STATUS}">
+	<div th:if="${STATUS_MESSAGE}">
 		<h3>
 			<strong>Status</strong>
 		</h3>
-		<h4 th:text=${PROFILE_STATUS}></h4>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
 	</div>
-	<form id="frmProfile" action="#" th:action="@{/profile}" method="post" th:object="${userEntity}">
+	<form th:action="@{/user/user-update}" method="post" th:object="${userEntityForUpdate}">
+		<div th:if="${OLD_PASSWORD}">
+			<input type="hidden" th:value=${OLD_PASSWORD} name="OLD_PASSWORD">
+		</div>
 		<div>
 			<div>
 				<label>CPF</label>
-				<input th:field="*{userCpf}" maxlength="11" type="text" id="inputCpf" placeholder="CPF"
-					readonly="readonly">
+				<input th:field="*{userCpf}" maxlength="11" type="text" name="userCpf" placeholder="CPF">
+				<button type="submit" name="search">Search</button>
 			</div>
 		</div>
 		<div>
 			<div>
 				<label>Name</label>
-				<input th:field="*{username}" maxlength="35" type="text" id="txtUsername" placeholder="Name">
+				<input th:field="*{username}" maxlength="35" type="text" placeholder="Name">
 			</div>
+		</div>
+		<div>
+			<label>Role</label>
+			<select th:field="*{userRole}" name="role" id="txtRole">
+				<option th:each="c : ${rolesList}" th:value="${c}" th:text="${c}" />
+			</select>
 		</div>
 		<div>
 			<div>
@@ -137,11 +160,11 @@
 			</div>
 			<div>
 				<label>Telephone</label>
-				<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555" maxlength="15">
+				<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555">
 			</div>
 			<div>
 				<label>Celphone</label>
-				<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555" maxlength="15">
+				<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555">
 			</div>
 			<div>
 				<label>Birthday</label>
@@ -151,11 +174,14 @@
 		<div>
 			<div>
 				<label>Email</label>
-				<input th:field="*{email}" maxlength="35" type="email" id="inputEmail4"
-					placeholder="Email" readonly="readonly">
+				<input th:field="*{email}" maxlength="35" type="email" id="inputEmail4" placeholder="Email">
+			</div>
+			<div>
+				<label>Password</label>
+				<input th:field="*{password}" maxlength="35" type="password" id="inputPassword4" placeholder="Password">
 			</div>
 		</div>
-		<div>
+		<div th:if="${OLD_PASSWORD}">
 			<button type="submit" name="save">Save</button>
 		</div>
 	</form>
