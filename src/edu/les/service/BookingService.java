@@ -22,6 +22,7 @@ public class BookingService{
 	private RoomService roomService;
 	
 	public void add(BookingEntity bookingEntity) throws ExceptionHandler{
+		bookingEntity.setRoomEntity(this.roomService.findById(bookingEntity.getRoomEntity().getRoomId()));
 		if (!this.hasErrors(bookingEntity)) {
 			this.bookingRepository.save(bookingEntity);
 		}
@@ -30,9 +31,6 @@ public class BookingService{
 	private boolean hasErrors(BookingEntity b) throws ExceptionHandler {
 		boolean result = true;
 		List<String> errorFields = new ArrayList<>();
-		if (b.getBookingId() <= 0) {
-			errorFields.add("Booking ID");
-		}
 		
 		if (b.getCheckIn() == null) {
 			errorFields.add("Check In Date");
@@ -64,5 +62,9 @@ public class BookingService{
 		}
 		
 		return result;
+	}
+
+	public Iterable<BookingEntity> fetchAll() {
+		return this.bookingRepository.findAll();
 	}
 }
