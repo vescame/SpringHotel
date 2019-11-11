@@ -63,7 +63,7 @@ public class UserService {
 	public Iterable<UserEntity> fetchAll() {
 		return this.userRepository.findAll();
 	}
-	
+
 	public Optional<UserEntity> fetchLogin(String email, String password) {
 		return this.userRepository.findByCredential(email, password);
 	}
@@ -71,10 +71,6 @@ public class UserService {
 	public boolean hasErrors(UserEntity u) throws ExceptionHandler {
 		boolean result = true;
 		List<String> errorFields = new ArrayList<String>();
-
-		if (u == null) {
-			return result;
-		}
 
 		if (u.getUserCpf().length() != 11) {
 			errorFields.add("CPF");
@@ -92,12 +88,16 @@ public class UserService {
 			errorFields.add("House Number");
 		}
 
-		if (u.getTelephoneNumber().length() > 15) {
-			errorFields.add("Telephone");
+		if (u.getTelephoneNumber() != null) {
+			if (u.getTelephoneNumber().length() > 15) {
+				errorFields.add("Telephone");
+			}
 		}
 
-		if (u.getCelphoneNumber().length() > 15) {
-			errorFields.add("Celphone");
+		if (u.getCelphoneNumber() != null) {
+			if (u.getCelphoneNumber().length() > 15) {
+				errorFields.add("Celphone");
+			}
 		}
 
 		if (u.getDateOfBirth() != null) {
@@ -106,12 +106,16 @@ public class UserService {
 			}
 		}
 
-		if (u.getEmail().length() == 0 || u.getEmail().length() > 35) {
-			errorFields.add("E-mail");
+		if (u.getEmail() != null) {
+			if (u.getEmail().length() == 0 || u.getEmail().length() > 35) {
+				errorFields.add("E-mail");
+			}
 		}
 
-		if (u.getPassword().length() == 0 || u.getPassword().length() < 6 || u.getPassword().length() > 35) {
-			errorFields.add("Password");
+		if (u.getPassword() != null) {
+			if (u.getPassword().length() == 0 || u.getPassword().length() < 6 || u.getPassword().length() > 35) {
+				errorFields.add("Password");
+			}
 		}
 
 		// TODO: check if is needed to validate user status

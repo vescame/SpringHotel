@@ -70,7 +70,7 @@
 	<nav>
 		<a th:href="@{/home}">Spring Hotel</a>
 		<div>
-			<ul th:if="${IS_ADMIN}">
+			<ul>
 				<li>
 					<a th:href="@{/user/user-search}">Search User</a>
 				</li>
@@ -79,14 +79,6 @@
 				</li>
 				<li>
 						<a th:href="@{/user/user-delete}">Delete User</a>
-				</li>
-			</ul>
-			<ul>
-				<li>
-					<a th:href="@{/profile}">Profile</a>
-				</li>
-				<li>
-					<a th:href="@{/logout}">Logout</a>
 				</li>
 			</ul>
 		</div>

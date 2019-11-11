@@ -11,13 +11,10 @@
 		<div>
 			<ul>
 				<li>
-					<a th:href="@{/room}">Rooms</a>
+					<a th:href="@{/booking/booking-checkout}">Check Out Booking</a>
 				</li>
 				<li>
-					<a th:href="@{/profile}">Profile</a>
-				</li>
-				<li>
-					<a th:href="@{/logout}">Logout</a>
+					<a th:href="@{/booking/booking-search}">View Booking</a>
 				</li>
 			</ul>
 		</div>
@@ -30,17 +27,16 @@
 	</div>
 	<form id="frmReserva" th:action="@{/booking/booking-add}" method="post" th:object="${bookingEntity}">
 		<div>
-			<label>Id</label>
-			<input th:field="*{bookingId}" maxlength="4" type="text" id="txtId" placeholder="Id" readonly="readonly">
+			<input th:field="*{bookingId}" maxlength="4" type="hidden">
 		</div>
-		<div th:object="${loggedInUser}">
+		<div>
 			<div>
 				<label>CPF</label>
-				<input th:field="*{userCpf}" maxlength="11" type="text" id="txtCpf" readonly="readonly">
+				<input th:value="${userCpf}" maxlength="11" type="text" readonly="readonly">
 			</div>
 			<div>
 				<label>Name</label>
-				<input th:field="*{username}" type="text" id="txtUsername" readonly="readonly">
+				<input th:value="${userName}" type="text" readonly="readonly">
 			</div>
 		</div>
 		<div>

@@ -26,7 +26,6 @@ public class BookingEntity {
 	private Date checkOut;
 	private float finalAmout;
 	private String status = "A";
-	private int daysPast;
 
 	public BookingEntity() {
 		this.checkIn = new Date();
@@ -89,7 +88,7 @@ public class BookingEntity {
 	@Transient
 	public float getFinalAmout() {
 		float pricePerDay = this.roomEntity.getRoomCategory().getPrice();
-		int days = this.daysPast;
+		int days = this.getDaysPast();
 		finalAmout = pricePerDay * days;
 		return finalAmout;
 	}
@@ -110,10 +109,6 @@ public class BookingEntity {
 	@Transient
 	public int getDaysPast() {
 		return this.daysPast(this.getCheckIn());
-	}
-
-	public void setDaysPast(int daysPast) {
-		this.daysPast = daysPast;
 	}
 
 	private int daysPast(Date checkin) {

@@ -1,0 +1,77 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Booking Search</title>
+	<style>
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			padding: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<nav>
+		<a th:href="@{/home}">Spring Hotel</a>
+		<div>
+			<ul>
+				<li>
+					<a th:href="@{/booking/booking-add}">New Booking</a>
+				</li>
+				<li>
+					<a th:href="@{/booking/booking-checkout}">Check Out Booking</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
+	</div>
+	<form th:action="@{/booking/booking-search}" method="post">
+		<!-- <input th:field="*{bookingId}" type="hidden"> -->
+		<div>
+			<div>
+				<label>CPF</label>
+				<input maxlength="11" type="text" name="userCpf">
+				<button type="submit">Search</button>
+			</div>
+		</div>
+		<div>
+			<h3>All Bookings</h3>
+			<table th:unless="${#lists.isEmpty(bookingEntityList)}">
+				<thead>
+					<tr>
+						<th>CPF</th>
+						<th>Name</th>
+						<th>Room Number</th>
+						<th>Check In</th>
+						<th>Check Out</th>
+						<th>Days Past</th>
+						<th>Status</th>
+						<th>Total:</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="b : ${bookingEntityList}">
+						<td th:text="${b.userEntity.userCpf}"/>
+						<td th:text="${b.userEntity.username}"/>
+						<td th:text="${b.roomEntity.roomNumber}"/>
+						<td th:text="${b.checkIn}"/>
+						<td th:text="${b.checkOut}"/>
+						<td th:text="${b.daysPast}"/>
+						<td th:text="${b.status}"/>
+						<td th:text="${b.finalAmout}"/>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</form>
+</body>
+
+</html>
