@@ -10,12 +10,20 @@
 		<a th:href="@{/home}">Spring Hotel</a>
 		<div>
 			<ul>
-				<li>
-					<a th:href="@{/booking/booking-add}">Bookings</a>
-				</li>
-				<li th:if="${IS_ADMIN}">
-					<a th:href="@{/user/user-add}">Users</a>
-				</li>
+				<div th:if="${IS_ADMIN}">
+					<li>
+						<a th:href="@{/user/user-add}">Users</a>
+					</li>
+					<li>
+						<a th:href="@{/booking/booking-add}">Bookings</a>
+					</li>
+					<li>
+						<a th:href="@{/room/room-add}">Rooms</a>
+					</li>
+					<li>
+						<a th:href="@{/room-type/room-type-add}">Room Category</a>
+					</li>
+				</div>
 				<li>
 					<a th:href="@{/profile}">Profile</a>
 				</li>

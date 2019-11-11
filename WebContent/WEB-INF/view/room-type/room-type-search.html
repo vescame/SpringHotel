@@ -1,0 +1,92 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Search Room Category</title>
+	<style>
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			padding: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<nav>
+		<a th:href="@{/home}">Spring Hotel</a>
+		<div>
+			<ul>
+				<li>
+					<a th:href="@{/room-type/room-type-add}">Add Room Category</a>
+				</li>
+				<li>
+					<a th:href="@{/room-type/room-type-update}">Update Room Category</a>
+				</li>
+				<li>
+					<a th:href="@{/room-type/room-type-delete}">Delete Room Category</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
+	</div>
+	<form th:action="@{/room-type/room-type-search}" method="post">
+		<div>
+			<div>
+				<label>Category</label>
+				<input name="category" maxlength="25" type="text" placeholder="Category">
+				<button type="submit">Search</button>
+			</div>
+		</div>
+	</form>
+	<div th:if=${roomCategoryEntity}>
+		<h3>Selected Room Categoriy</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Category</th>
+					<th>Price</th>
+					<th>Max. People</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:object="${roomCategoryEntity}">
+					<td th:text="*{roomCategoryId}" />
+					<td th:text="*{category}" />
+					<td th:text="*{price}" />
+					<td th:text="*{maxPeople}" />
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<h3>All Room Categories</h3>
+		<table th:unless="${#lists.isEmpty(roomCategoryList)}">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Category</th>
+					<th>Price</th>
+					<th>Max. People</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="b : ${roomCategoryList}">
+					<td th:text="${b.roomCategoryId}"/>
+					<td th:text="${b.category}"/>
+					<td th:text="${b.price}"/>
+					<td th:text="${b.maxPeople}"/>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>

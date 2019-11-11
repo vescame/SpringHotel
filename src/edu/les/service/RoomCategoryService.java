@@ -26,6 +26,22 @@ public class RoomCategoryService {
 		}
 	}
 	
+	public RoomCategoryEntity findById(int id) throws ExceptionHandler {
+		Optional<RoomCategoryEntity> r = this.roomCategoryRepository.findById(id);
+		if (!r.isPresent()) {
+			throw new ExceptionHandler("Category not found!");
+		}
+		return r.get();
+	}
+
+	public RoomCategoryEntity fetchByCategory(String category) throws ExceptionHandler {
+		Optional<RoomCategoryEntity> r = this.roomCategoryRepository.fetchByCategory(category);
+		if (!r.isPresent()) {
+			throw new ExceptionHandler("Category not found!");
+		}
+		return r.get();
+	}
+	
 	public boolean hasErrors(RoomCategoryEntity c) throws ExceptionHandler {
 		boolean result = true;
 		List<String> fieldsWithError = new ArrayList<String>();
@@ -46,13 +62,5 @@ public class RoomCategoryService {
 		}
 		
 		return result;
-	}
-
-	public Optional<RoomCategoryEntity> findById(int id) throws ExceptionHandler {
-		return this.roomCategoryRepository.findById(id);
-	}
-
-	public RoomCategoryEntity fetchByCategory(String category) {
-		return this.roomCategoryRepository.fetchByCategory(category);
 	}
 }

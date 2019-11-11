@@ -1,15 +1,12 @@
 package edu.les.controller;
 
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,58 +19,50 @@ public class RoomCategoryController {
 	@Autowired
 	private RoomCategoryService roomCategoryService;
 
-	private final String viewUrl = "/room-type";
-	private final String viewObjectName = "roomCategoryEntity";
-	private final String viewObjectListName = "roomCategoryList";
+	private final String viewPrefix = "/room-type";
+	private final String viewRoomCategoryAdd = viewPrefix + "/room-type-add";
+	private final String viewRoomCategorySearch = viewPrefix + "/room-type-search";
+	private final String roomCategoryObj = "roomCategoryEntity";
+	private final String roomCategoryObjList = "roomCategoryList";
 	private final String statusKey = "STATUS_MESSAGE";
-	private final String successfulStatusValue = "Success!";
-	private final String notFoundStatusValue = "No Room Category found with id: ";
 
-	@RequestMapping(value = viewUrl, method = RequestMethod.GET)
+	@GetMapping(value = viewRoomCategoryAdd)
 	public ModelAndView roomTypeView(Model model) {
-		ModelAndView modelAndView = new ModelAndView(viewUrl);
-		Iterable<RoomCategoryEntity> roomCategoryList = this.roomCategoryService.fetchAll();
-		modelAndView.addObject(viewObjectListName, roomCategoryList);
-		if (!model.containsAttribute(this.viewObjectName)) {
-			modelAndView.addObject(viewObjectName, new RoomCategoryEntity());
-		}
+		ModelAndView modelAndView = new ModelAndView(this.viewRoomCategoryAdd);
+		modelAndView.addObject(this.roomCategoryObj, new RoomCategoryEntity());
 		return modelAndView;
 	}
 
-	@RequestMapping(value = viewUrl, params = "save", method = RequestMethod.POST)
-	public ModelAndView roomTypeSave(@ModelAttribute(viewObjectName) RoomCategoryEntity roomCategoryEntity,
-			HttpServletRequest request, RedirectAttributes redir) {
+	@PostMapping(value = viewRoomCategoryAdd)
+	public ModelAndView roomTypeSave(@ModelAttribute(roomCategoryObj) RoomCategoryEntity roomCategoryEntity,
+			RedirectAttributes redir) {
 		try {
 			this.roomCategoryService.addOrUpdate(roomCategoryEntity);
-			redir.addFlashAttribute(statusKey, this.successfulStatusValue);
+			redir.addFlashAttribute(this.statusKey, "Category saved successfully!");
 		} catch (ExceptionHandler e) {
-			redir.addFlashAttribute(statusKey, e.getMessage());
+			redir.addFlashAttribute(this.statusKey, e.getMessage());
 		}
-		return new ModelAndView("redirect:" + this.viewUrl);
+		return new ModelAndView("redirect:" + this.viewRoomCategoryAdd);
 	}
 
-	@RequestMapping(value = viewUrl, params = "search", method = RequestMethod.POST)
-	public ModelAndView roomTypeSearch(@ModelAttribute(viewObjectName) RoomCategoryEntity roomCategoryEntity,
-			HttpServletRequest request, RedirectAttributes redir) {
-		RoomCategoryEntity entity = this.getById(roomCategoryEntity.getRoomCategoryId());
-		if (entity != null) {
-			redir.addFlashAttribute(viewObjectName, entity);
-		} else {
-			redir.addFlashAttribute(this.statusKey, this.notFoundStatusValue + roomCategoryEntity.getRoomCategoryId());
-		}
-		return new ModelAndView("redirect:" + viewUrl);
+	@GetMapping(value = viewRoomCategorySearch)
+	public ModelAndView roomTypeSearch(Model model) {
+		ModelAndView modelAndView = new ModelAndView(this.viewRoomCategorySearch);
+		modelAndView.addObject(this.roomCategoryObj, new RoomCategoryEntity());
+		modelAndView.addObject(this.roomCategoryObjList, this.roomCategoryService.fetchAll());
+		return modelAndView.addAllObjects(model.asMap());
 	}
 
-	private RoomCategoryEntity getById(int id) {
-		Optional<RoomCategoryEntity> entity;
+	@PostMapping(value = viewRoomCategorySearch)
+	public ModelAndView roomTypeSearch(@RequestParam("category") String category,
+			RedirectAttributes redirectAttributes) {
+		ModelAndView modelAndView = new ModelAndView("redirect:" + this.viewRoomCategorySearch);
 		try {
-			entity = this.roomCategoryService.findById(id);
-			if (entity.isPresent()) {
-				return entity.get();
-			}
+			RoomCategoryEntity entity = this.roomCategoryService.fetchByCategory(category);
+			redirectAttributes.addFlashAttribute(this.roomCategoryObj, entity);
 		} catch (ExceptionHandler e) {
-			e.printStackTrace();
+			redirectAttributes.addFlashAttribute(this.statusKey, e.getMessage());
 		}
-		return null;
+		return modelAndView;
 	}
 }
