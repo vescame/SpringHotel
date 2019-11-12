@@ -63,4 +63,8 @@ public class RoomCategoryService {
 		
 		return result;
 	}
+
+	public void deleteById(int id) throws ExceptionHandler {
+		this.roomCategoryRepository.deleteById(id);
+	}
 }

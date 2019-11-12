@@ -62,6 +62,16 @@
 					<td th:text="*{category}" />
 					<td th:text="*{price}" />
 					<td th:text="*{maxPeople}" />
+					<td>
+						<a th:href="@{/room-type/room-type-update/{id} (id=*{roomCategoryId})}">
+							Edit
+						</a>
+					</td>
+					<td>
+						<a th:href="@{/room-type/room-type-delete/{id} (id=*{roomCategoryId})}">
+							Delete
+						</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>
