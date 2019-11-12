@@ -29,16 +29,16 @@ public class SpringHotelSession {
 	public static String getLoggedInTime() {
 		return DateFormatter.format(SpringHotelSession.loginDate);
 	}
-
-	private static void mock() {
-		// mock
-		UserEntity user = new UserEntity();
-		user.setUserCpf("12345678900");
-		user.setUsername("Vinicius Escame");
-		user.setUserRole("USER");
-		user.setEmail("v.escame@gmail.com");
-		user.setPassword("spring");
-		user.setHouseNumber(12);
-		SpringHotelSession.UserEntity = user;
-	}
+//
+//	private static void mock() {
+//		// mock
+//		UserEntity user = new UserEntity();
+//		user.setUserCpf("12345678900");
+//		user.setUsername("Vinicius Escame");
+//		user.setUserRole("USER");
+//		user.setEmail("v.escame@gmail.com");
+//		user.setPassword("spring");
+//		user.setHouseNumber(12);
+//		SpringHotelSession.UserEntity = user;
+//	}
 }

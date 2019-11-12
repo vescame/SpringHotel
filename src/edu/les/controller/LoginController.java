@@ -3,10 +3,9 @@ package edu.les.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -17,42 +16,33 @@ import edu.les.service.LoginService;
 @Controller
 public class LoginController {
 	@Autowired
-	LoginService loginService;
+	private LoginService loginService;
 
-	private final String defaultUrlRedirectsLogin = "/";
-	private final String loginUrl = "/login";
-	private final String homeUrl = "/home";
-	private final String statusKey = "STATUS_MESSAGE";
-	private final String statusValueInvalidCredentials = "Credenciais invalidas, tente novamente.";
-
-	@RequestMapping(value = loginUrl, method = RequestMethod.GET)
+	@GetMapping(value = { "/", "/login" })
 	public ModelAndView loginView(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.loginUrl);
-		if (model.containsAttribute(this.statusKey)) {
-			modelAndView.addObject(this.statusKey, this.statusValueInvalidCredentials);
-		}
+		ModelAndView modelAndView = new ModelAndView("/login");
 		modelAndView.addObject("userEntity", new UserEntity());
-		return modelAndView;
+		return modelAndView.addAllObjects(model.asMap());
 	}
 
-	@RequestMapping(value = defaultUrlRedirectsLogin, method = RequestMethod.GET)
-	public ModelAndView redirectToLoginView() {
-		ModelMap modelMap = new ModelMap();
-		return new ModelAndView("redirect:" + this.loginUrl, modelMap);
-	}
-
-	@RequestMapping(value = loginUrl, method = RequestMethod.POST)
+	@PostMapping(value = "/login")
 	public ModelAndView loginUser(@ModelAttribute("userEntity") UserEntity userEntity,
-			RedirectAttributes redirAttr) {
-		ModelMap modelMap = new ModelMap();
-		String url = "redirect:" + this.loginUrl;
+			RedirectAttributes redirectAttributes) {
+		String url = "redirect:/login";
 		UserEntity userSessionInstance = this.loginService.login(userEntity);
 		if (userSessionInstance != null) {
-			url = "redirect:" + this.homeUrl;
+			url = "redirect:/home";
 			SpringHotelSession.loginUser(userSessionInstance);
 		} else {
-			redirAttr.addFlashAttribute(this.statusKey, this.statusValueInvalidCredentials);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Invalid credentials!");
 		}
-		return new ModelAndView(url, modelMap);
+		return new ModelAndView(url);
+	}
+
+	@GetMapping(value = "/logout")
+	public ModelAndView logout(RedirectAttributes redirectAttributes) {
+		SpringHotelSession.logoutUser();
+		redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Youre logged out!");
+		return new ModelAndView("redirect:/login");
 	}
 }
