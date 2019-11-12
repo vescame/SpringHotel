@@ -83,7 +83,7 @@
 		</h3>
 		<h4 th:text=${PROFILE_STATUS}></h4>
 	</div>
-	<form id="frmProfile" action="#" th:action="@{/profile}" method="post" th:object="${userEntity}">
+	<form th:action="@{/profile}" th:object="${userEntity}" method="post">
 		<div>
 			<div>
 				<label>CPF</label>
@@ -151,12 +151,15 @@
 		<div>
 			<div>
 				<label>Email</label>
-				<input th:field="*{email}" maxlength="35" type="email" id="inputEmail4"
-					placeholder="Email" readonly="readonly">
+				<input th:field="*{email}" maxlength="35" type="email" id="inputEmail4" placeholder="Email"
+					readonly="readonly">
+			</div>
+			<div>
+				<input th:field="*{password}" type="hidden">
 			</div>
 		</div>
 		<div>
-			<button type="submit" name="save">Save</button>
+			<button type="submit">Save</button>
 		</div>
 	</form>
 </body>
