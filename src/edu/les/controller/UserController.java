@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
+import edu.les.lab.dao.UserDAO;
 import edu.les.service.UserService;
 
 @Controller
@@ -54,7 +55,8 @@ public class UserController {
 	public ModelAndView add(@ModelAttribute(userObj) UserEntity userEntity, RedirectAttributes redirectAttributes) {
 		ModelAndView modelAndView = new ModelAndView("redirect:" + this.userAddUrl);
 		try {
-			this.userService.add(userEntity);
+			new UserDAO().insert(userEntity);
+			redirectAttributes.addFlashAttribute(this.statusMessage, "User created successfully!");
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute(this.statusMessage, "Failed to create user!" + e.getMessage());
 			redirectAttributes.addFlashAttribute(this.userObj, userEntity);
@@ -74,7 +76,7 @@ public class UserController {
 	public ModelAndView search(@RequestParam("userCpf") String userCpf, RedirectAttributes redirectAttributes) {
 		ModelAndView modelAndView = new ModelAndView("redirect:" + this.userSearchUrl);
 		try {
-			UserEntity u = this.userService.findById(userCpf);
+			UserEntity u = new UserDAO().select(userCpf);
 			redirectAttributes.addFlashAttribute(this.userObj, u);
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
