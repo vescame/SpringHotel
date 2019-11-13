@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import edu.les.entity.BookingEntity;
 import edu.les.entity.RoomEntity;
+import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
 import edu.les.repository.BookingRepository;
-import edu.les.security.SpringHotelSession;
 
 @Service
 public class BookingService {
@@ -26,10 +26,14 @@ public class BookingService {
 	private RoomService roomService;
 
 	public void add(BookingEntity bookingEntity) throws ExceptionHandler {
+		if (!this.hasUserCpf(bookingEntity)) {
+			throw new ExceptionHandler("You must write the user CPF");
+		}
 		if (this.hasSelectedRoom(bookingEntity)) {
 			RoomEntity rentedRoom = this.roomService.findById(bookingEntity.getRoomEntity().getRoomId());
-			bookingEntity.setUserEntity(SpringHotelSession.getLoggedInUser());
 			bookingEntity.setRoomEntity(rentedRoom);
+			UserEntity userEntity = this.userService.findByCpf(bookingEntity.getUserEntity().getUserCpf());
+			bookingEntity.setUserEntity(userEntity);
 			if (!this.hasErrors(bookingEntity)) {
 				this.bookingRepository.save(bookingEntity);
 			}
@@ -48,13 +52,21 @@ public class BookingService {
 		return this.bookingRepository.fetchActive();
 	}
 
+	private boolean hasUserCpf(BookingEntity b) throws ExceptionHandler {
+		if (b.getUserEntity() != null && !b.getUserEntity().getUserCpf().isEmpty()
+				&& b.getUserEntity().getUserCpf().length() == 11) {
+			return true;
+		}
+		return false;
+	}
+
 	private boolean hasSelectedRoom(BookingEntity b) throws ExceptionHandler {
 		if (b.getRoomEntity() == null) {
 			throw new ExceptionHandler("Room was not selected!");
 		}
 		return true;
 	}
-	
+
 	public BookingEntity fetchActiveBookingByCpf(String userCpf) throws ExceptionHandler {
 		Iterable<BookingEntity> activeBookings = this.bookingRepository.fetchActive();
 		BookingEntity userBooking = new BookingEntity();
@@ -69,6 +81,14 @@ public class BookingService {
 		return userBooking;
 	}
 	
+	public BookingEntity fetchById(int bookingId) throws ExceptionHandler {
+		Optional<BookingEntity> booking = this.bookingRepository.findById(bookingId);
+		if (booking.isPresent()) {
+			return booking.get();
+		}
+		throw new ExceptionHandler("Booking not found!");
+	}
+
 	public void checkOut(int bookingId) throws ExceptionHandler {
 		Optional<BookingEntity> booking = this.bookingRepository.findById(bookingId);
 		if (booking.isPresent()) {

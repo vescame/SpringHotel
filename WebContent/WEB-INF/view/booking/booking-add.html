@@ -11,9 +11,6 @@
 		<div>
 			<ul>
 				<li>
-					<a th:href="@{/booking/booking-checkout}">Check Out Booking</a>
-				</li>
-				<li>
 					<a th:href="@{/booking/booking-search}">View Booking</a>
 				</li>
 			</ul>
@@ -25,19 +22,10 @@
 		</h3>
 		<h4 th:text=${STATUS_MESSAGE}></h4>
 	</div>
-	<form id="frmReserva" th:action="@{/booking/booking-add}" method="post" th:object="${bookingEntity}">
+	<form th:object="${bookingEntity}" th:action="@{/booking/booking-add}" method="post">
 		<div>
-			<input th:field="*{bookingId}" maxlength="4" type="hidden">
-		</div>
-		<div>
-			<div>
-				<label>CPF</label>
-				<input th:value="${userCpf}" maxlength="11" type="text" readonly="readonly">
-			</div>
-			<div>
-				<label>Name</label>
-				<input th:value="${userName}" type="text" readonly="readonly">
-			</div>
+			<label>CPF</label>
+			<input th:field="*{userEntity.userCpf}" maxlength="11" type="text">
 		</div>
 		<div>
 			<label>Check In</label>
@@ -46,10 +34,6 @@
 		<div>
 			<label>Check Out</label>
 			<input th:field="*{checkOut}" type="date" id="txtCheckout" readonly="readonly">
-		</div>
-		<div>
-			<label>Days Past</label>
-			<input th:field="*{daysPast}" type="text" id="txtDaysPast" readonly="readonly">
 		</div>
 		<div>
 			<label>Status</label>

@@ -21,9 +21,6 @@
 				<li>
 					<a th:href="@{/booking/booking-add}">New Booking</a>
 				</li>
-				<li>
-					<a th:href="@{/booking/booking-checkout}">Check Out Booking</a>
-				</li>
 			</ul>
 		</div>
 	</nav>
@@ -34,7 +31,6 @@
 		<h4 th:text=${STATUS_MESSAGE}></h4>
 	</div>
 	<form th:action="@{/booking/booking-search}" method="post">
-		<!-- <input th:field="*{bookingId}" type="hidden"> -->
 		<div>
 			<div>
 				<label>CPF</label>
@@ -67,6 +63,13 @@
 						<td th:text="${b.daysPast}"/>
 						<td th:text="${b.status}"/>
 						<td th:text="${b.finalAmout}"/>
+						<div th:if="${b.getStatus()}">
+							<td th:if="${#strings.equals(b.status, 'A')}">
+								<a th:href="@{/booking/booking-checkout/{id} (id=${b.bookingId})}">
+									<span>Check Out</span>
+								</a>
+							</td>
+						</div>
 					</tr>
 				</tbody>
 			</table>

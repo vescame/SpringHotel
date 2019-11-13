@@ -35,18 +35,16 @@
 	</div>
 	<form th:object="${bookingEntity}" th:action="@{/booking/booking-checkout}" method="post">
 		<div>
-			<div th:if="${bookingEntity}">
-				<input type="hidden" name="bookingId" th:field="*{bookingId}" th:value="*{bookingId}" />
-				<label>CPF</label>
-				<input th:field="*{userEntity.userCpf}" th:value="*{userEntity.userCpf}" maxlength="11" type="text"
-					readonly="readonly" />
-				<button type="submit">Check Out</button>
-			</div>
-			<!-- if admin, then he can check out others bookings -->
-			<div th:if=${IS_ADMIN}>
-				<input name="userCpf" maxlength="11" type="text">
-				<button type="submit">Check Out</button>
-			</div>
+			<label>ID</label>
+			<input type="text" readonly="readonly" name="bookingId" th:field="*{bookingId}" th:value="*{bookingId}" />
+		</div>
+		<div>
+			<label>CPF</label>
+			<input th:field="*{userEntity.userCpf}" th:value="*{userEntity.userCpf}" maxlength="11" type="text"
+				readonly="readonly" />
+		</div>
+		<div>
+			<button type="submit">Check Out</button>
 		</div>
 	</form>
 	<table th:if="${bookingEntity}">

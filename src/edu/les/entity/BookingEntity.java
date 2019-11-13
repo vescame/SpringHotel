@@ -115,6 +115,9 @@ public class BookingEntity {
 		int daysPast = 0;
 		try {
 			Date today = new Date();
+			if (this.getCheckOut() != null) {
+				today = this.getCheckOut();
+			}
 			long diff = today.getTime() - checkin.getTime();
 			daysPast = (int) (diff / (1000 * 60 * 60 * 24));
 		} catch (NullPointerException e) {
