@@ -28,18 +28,16 @@ public class RoomService {
 		return this.roomRepository.findAll();
 	}
 
-	public void add(RoomEntity roomEntity) throws ExceptionHandler {
+	public void addOrUpdate(RoomEntity roomEntity) throws ExceptionHandler {
 		if (!this.hasErrors(roomEntity)) {
 			roomEntity.setRoomCategory(
 					this.roomCategoryService.fetchByCategory(roomEntity.getRoomCategory().getCategory()));
 			this.roomRepository.save(roomEntity);
 		}
 	}
-
-	public void update(RoomEntity roomEntity) throws ExceptionHandler {
-		if (!this.hasErrors(roomEntity)) {
-			this.roomRepository.save(roomEntity);
-		}
+	
+	public void deleteByID(int id) throws ExceptionHandler {
+		this.roomRepository.deleteById(id);
 	}
 
 	public Iterable<RoomEntity> fetchDisponible() throws ExceptionHandler {
@@ -52,19 +50,17 @@ public class RoomService {
 		return list;
 	}
 
-	public RoomEntity findById(int roomId) {
+	public RoomEntity findById(int roomId) throws ExceptionHandler {
 		Optional<RoomEntity> room = this.roomRepository.findById(roomId);
-		return room.isPresent() ? room.get() : null;
+		if (room.isPresent()) {
+			return room.get();
+		}
+		throw new ExceptionHandler("Room not found!");
 	}
 
 	public boolean hasErrors(RoomEntity r) throws ExceptionHandler {
 		boolean result = true;
 		List<String> fieldsWithError = new ArrayList<String>();
-		if (r.getRoomId() == 0 || r.getRoomId() < 1) {
-			fieldsWithError.add("Room Id");
-		}
-
-		// TODO: check if need any value validation
 
 		if (r.getRoomNumber() == 0 || r.getRoomNumber() < 1) {
 			fieldsWithError.add("Room Number");
