@@ -38,7 +38,7 @@ public class UserService {
 		}
 	}
 
-	public UserEntity findById(String userCpf) throws ExceptionHandler {
+	public UserEntity findByCpf(String userCpf) throws ExceptionHandler {
 		if (userCpf.length() != 11) {
 			throw new ExceptionHandler("Invalid CPF");
 		}

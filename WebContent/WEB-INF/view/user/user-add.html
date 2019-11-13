@@ -74,12 +74,6 @@
 				<li>
 					<a th:href="@{/user/user-search}">Search User</a>
 				</li>
-				<li>
-						<a th:href="@{/user/user-update}">Update User</a>
-				</li>
-				<li>
-						<a th:href="@{/user/user-delete}">Delete User</a>
-				</li>
 			</ul>
 		</div>
 	</nav>
@@ -101,6 +95,12 @@
 				<label>Name</label>
 				<input th:field="*{username}" maxlength="35" type="text" id="txtUsername" placeholder="Name">
 			</div>
+		</div>
+		<div>
+			<label>Role</label>
+			<select th:field="*{userRole}" name="role" id="txtRole">
+				<option th:each="c : ${rolesList}" th:value="${c}" th:text="${c}" />
+			</select>
 		</div>
 		<div>
 			<div>

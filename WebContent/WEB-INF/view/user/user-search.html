@@ -19,13 +19,7 @@
 		<div>
 			<ul>
 				<li>
-					<a th:href="@{/user/user-add}">Add User</a>
-				</li>
-				<li>
-					<a th:href="@{/user/user-update}">Update User</a>
-				</li>
-				<li>
-					<a th:href="@{/user/user-delete}">Delete User</a>
+					<a th:href="@{/user/user-add}">New User</a>
 				</li>
 			</ul>
 		</div>
@@ -38,8 +32,8 @@
 	</div>
 	<form th:action="@{/user/user-search}" method="post">
 		<div>
-			<label for="inputCpf">CPF</label>
-			<input id="inputCpf" maxlength="11" type="text" name="userCpf" placeholder="CPF">
+			<label>CPF</label>
+			<input maxlength="11" type="text" name="userCpf" placeholder="CPF">
 			<button type="submit">Search</button>
 		</div>
 	</form>
@@ -70,6 +64,12 @@
 					<td th:text="*{dateOfBirth}" />
 					<td th:text="*{email}" />
 					<td th:text="*{userRole}" />
+					<td>
+						<a th:href="@{/user/user-update/{id} (id=*{userCpf})}">Edit</a>
+					</td>
+					<td>
+						<a th:href="@{/user/user-delete/{id} (id=*{userCpf})}">Delete</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>

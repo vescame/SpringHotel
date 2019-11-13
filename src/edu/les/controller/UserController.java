@@ -2,12 +2,14 @@ package edu.les.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,17 +24,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	private final String viewPrefix = "/user";
-	private final String userObj = "userEntity";
-	private final String userObjForUpdate = "userEntityForUpdate";
-	private final String userObjList = "userEntityList";
-	private final String userAddUrl = viewPrefix + "/user-add";
-	private final String userUpdateUrl = viewPrefix + "/user-update";
-	private final String userSearchUrl = viewPrefix + "/user-search";
-	private final String userDeleteUrl = viewPrefix + "/user-delete";
-	private final String oldPasswdParam = "OLD_PASSWORD";
-	private final String statusMessage = "STATUS_MESSAGE";
-
 	public List<String> roleList() {
 		List<String> roles = new ArrayList<>();
 		roles.add("ADMINISTRATOR");
@@ -41,102 +32,95 @@ public class UserController {
 		return roles;
 	}
 
-	@GetMapping(value = userAddUrl)
+	@GetMapping(value = "/user/user-add")
 	public ModelAndView add(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.userAddUrl);
-		if (!model.containsAttribute(this.userObj)) {
-			modelAndView.addObject(this.userObj, new UserEntity());
-		}
+		ModelAndView modelAndView = new ModelAndView("/user/user-add");
+		modelAndView.addObject("userEntity", new UserEntity());
+		modelAndView.addObject("rolesList", this.roleList());
 		return modelAndView;
 	}
 
-	@PostMapping(value = userAddUrl)
-	public ModelAndView add(@ModelAttribute(userObj) UserEntity userEntity, RedirectAttributes redirectAttributes) {
-		ModelAndView modelAndView = new ModelAndView("redirect:" + this.userAddUrl);
+	@PostMapping(value = "/user/user-add")
+	public ModelAndView add(@ModelAttribute("userEntity") UserEntity userEntity,
+			RedirectAttributes redirectAttributes) {
+		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-add");
 		try {
 			this.userService.add(userEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User successfully created!");
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, "Failed to create user!" + e.getMessage());
-			redirectAttributes.addFlashAttribute(this.userObj, userEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Failed to create user!" + e.getMessage());
+			redirectAttributes.addFlashAttribute("userEntity", userEntity);
 		}
 		return modelAndView;
 	}
 
-	@GetMapping(value = userSearchUrl)
+	@GetMapping(value = "/user/user-search")
 	public ModelAndView search(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.userSearchUrl);
+		ModelAndView modelAndView = new ModelAndView("/user/user-search");
 		Iterable<UserEntity> userEntityList = this.userService.fetchAll();
-		modelAndView.addObject(this.userObjList, userEntityList);
+		modelAndView.addObject("userEntityList", userEntityList);
 		return modelAndView;
 	}
 
-	@PostMapping(value = userSearchUrl)
-	public ModelAndView search(@RequestParam("userCpf") String userCpf, RedirectAttributes redirectAttributes) {
-		ModelAndView modelAndView = new ModelAndView("redirect:" + this.userSearchUrl);
+	@PostMapping(value = "/user/user-search")
+	public ModelAndView search(@RequestParam("userCpf") Optional<String> userCpf, RedirectAttributes redirectAttributes) {
+		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
-			UserEntity u = this.userService.findById(userCpf);
-			redirectAttributes.addFlashAttribute(this.userObj, u);
-		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
-		}
-		return modelAndView;
-	}
-
-	@GetMapping(value = userDeleteUrl)
-	public ModelAndView delete(Model model) {
-		return new ModelAndView(this.userDeleteUrl);
-	}
-
-	@PostMapping(value = userDeleteUrl)
-	public ModelAndView delete(@RequestParam("userCpf") String userCpf, RedirectAttributes redirectAttributes) {
-		ModelAndView modelAndView = new ModelAndView("redirect:" + this.userDeleteUrl);
-		try {
-			this.userService.delete(userCpf);
-			redirectAttributes.addFlashAttribute(this.statusMessage, "User deleted!");
-		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
-		}
-		return modelAndView;
-	}
-
-	@GetMapping(value = userUpdateUrl)
-	public ModelAndView update(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.userUpdateUrl);
-		if (!model.containsAttribute(this.userObjForUpdate)) {
-			modelAndView.addObject(this.userObjForUpdate, new UserEntity());
-		}
-		if (!model.containsAttribute("rolesList")) {
-			modelAndView.addObject("rolesList", this.roleList());
-		}
-		return modelAndView.addAllObjects(model.asMap());
-	}
-
-	@PostMapping(value = userUpdateUrl, params = "search")
-	public ModelAndView update(@RequestParam("userCpf") String userCpf, RedirectAttributes redirectAttributes) {
-		try {
-			UserEntity user = this.userService.findById(userCpf);
-			redirectAttributes.addFlashAttribute(this.oldPasswdParam, user.getPassword());
-			redirectAttributes.addFlashAttribute(this.userObjForUpdate, user);
-		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
-		}
-		return new ModelAndView("redirect:" + this.userUpdateUrl);
-	}
-
-	@PostMapping(value = userUpdateUrl, params = "save")
-	public ModelAndView update(@ModelAttribute(userObjForUpdate) UserEntity userEntityUpdated,
-			@RequestParam(oldPasswdParam) String oldPassword, RedirectAttributes redirectAttributes) {
-		try {
-			// if old user didn't specified a password,
-			// we assume he doesn't want to update it, so still the same
-			if (userEntityUpdated.getPassword().length() == 0) {
-				userEntityUpdated.setPassword(oldPassword);
+			if (userCpf.isPresent()) {
+				UserEntity userEntity = this.userService.findByCpf(userCpf.get());
+				redirectAttributes.addFlashAttribute("userEntity", userEntity);
 			}
-			this.userService.update(userEntityUpdated);
-			redirectAttributes.addFlashAttribute(this.statusMessage, "User Updated!");
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
 		}
-		return new ModelAndView("redirect:" + this.userUpdateUrl);
+		return modelAndView;
+	}
+
+	@GetMapping(value = "/user/user-update/{id}")
+	public ModelAndView update(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		ModelAndView modelAndView = new ModelAndView("/user/user-update");
+		try {
+			if (cpf.isPresent()) {
+				UserEntity userEntity = this.userService.findByCpf(cpf.get());
+				modelAndView.addObject("userEntity", userEntity);
+				modelAndView.addObject("OLD_PASSWORD", userEntity.getPassword());
+				modelAndView.addObject("rolesList", this.roleList());
+			}
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addAttribute("STATUS_MESSAGE", e.getMessage());
+			return new ModelAndView("redirect:/user/user-search");
+		}
+		return modelAndView;
+	}
+
+	@PostMapping(value = "/user/user-update")
+	public ModelAndView update(@ModelAttribute("userEntity") UserEntity userEntity,
+			@RequestParam("OLD_PASSWORD") Optional<String> password, RedirectAttributes redirectAttributes) {
+		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
+		try {
+			if (userEntity.getPassword().isEmpty() && password.isPresent()) {
+				userEntity.setPassword(password.get());
+				this.userService.update(userEntity);
+				redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User Updated!");
+			}
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+			redirectAttributes.addFlashAttribute("userEntity", userEntity);
+			return new ModelAndView("redirect:/user/user-update/" + userEntity.getUserCpf());
+		}
+		return modelAndView;
+	}
+
+	@GetMapping(value = "/user/user-delete/{id}")
+	public ModelAndView delete(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
+		try {
+			if (cpf.isPresent()) {
+				this.userService.delete(cpf.get());
+			}
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+		}
+		return modelAndView;
 	}
 }
