@@ -44,6 +44,7 @@ public class Config implements WebMvcConfigurer {
 		templateResolver.setPrefix("/WEB-INF/view/");
 		templateResolver.setSuffix(".html");
 		templateResolver.setTemplateMode(TemplateMode.HTML);
+		templateResolver.setCharacterEncoding("utf-8");
 		templateResolver.setCacheable(true);
 
 		SpringTemplateEngine templateEngine = new SpringTemplateEngine();

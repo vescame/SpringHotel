@@ -33,6 +33,7 @@ public class RegistrationController {
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Usuario registrado com sucesso!");
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+			redirectAttributes.addFlashAttribute("userEntity", userEntity);
 		}
 		return new ModelAndView("redirect:/registration");
 	}

@@ -82,15 +82,15 @@
 		<div>
 			<div>
 				<label>House Number</label>
-				<input th:field="*{houseNumber}" type="text" id="txtHouseNumber" placeholder="ex.: 443">
+				<input th:field="*{houseNumber}" type="text" maxlength="5" placeholder="ex.: 443">
 			</div>
 			<div>
 				<label>Telephone</label>
-				<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555">
+				<input th:field="*{telephoneNumber}" type="tel" maxlength="15" value="11 5555 5555">
 			</div>
 			<div>
 				<label>Celphone</label>
-				<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555">
+				<input th:field="*{celphoneNumber}" type="tel" maxlength="15" value="11 5555 5555">
 			</div>
 			<div>
 				<label>Birthday</label>
