@@ -29,8 +29,7 @@ public class ProfileController {
 	}
 
 	@PostMapping(value = "/profile")
-	public ModelAndView loginView(@ModelAttribute() UserEntity userEntity,
-			RedirectAttributes redirectAttributes) {
+	public ModelAndView loginView(@ModelAttribute() UserEntity userEntity, RedirectAttributes redirectAttributes) {
 		try {
 			this.userService.update(userEntity);
 			redirectAttributes.addFlashAttribute("PROFILE_STATUS",

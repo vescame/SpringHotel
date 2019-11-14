@@ -19,6 +19,9 @@ public class HomeController {
 
 	@RequestMapping(value = viewUrl, method = RequestMethod.GET)
 	public ModelAndView loginView(Model model) {
+		if (SpringHotelSession.getLoggedInUser() == null) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView(this.viewUrl);
 		final String roleDesc = SpringHotelSession.getLoggedInUser().getUserRole();
 		if (roleDesc.equals("ADMINISTRATOR") || roleDesc.equals("EMPLOYEE")) {

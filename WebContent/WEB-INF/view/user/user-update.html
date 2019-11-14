@@ -90,8 +90,7 @@
 		<div>
 			<div>
 				<label>CPF</label>
-				<input th:field="*{userCpf}" maxlength="11" type="text" name="userCpf" placeholder="CPF">
-				<button type="submit" name="search">Search</button>
+				<input th:field="*{userCpf}" maxlength="11" readonly="readonly" type="text" name="userCpf" placeholder="CPF">
 			</div>
 		</div>
 		<div>
@@ -164,7 +163,7 @@
 			</div>
 			<div>
 				<label>New Password (if empty, password still the same)</label>
-				<input th:field="*{password}" maxlength="35" type="password" id="inputPassword4" placeholder="Strong password">
+				<input th:field="*{password}" maxlength="35" type="password" placeholder="Strong password">
 			</div>
 		</div>
 		<div th:if="${OLD_PASSWORD}">

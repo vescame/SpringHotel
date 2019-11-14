@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.les.entity.BookingEntity;
 import edu.les.entity.RoomEntity;
 import edu.les.exception.ExceptionHandler;
+import edu.les.security.SpringHotelSession;
 import edu.les.service.BookingService;
 import edu.les.service.RoomService;
 
@@ -33,6 +34,9 @@ public class BookingController {
 
 	@GetMapping(value = "/booking/booking-add")
 	public ModelAndView bookingView(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/booking/booking-add");
 		try {
 			modelAndView.addObject("roomList", this.disponibleRooms());
@@ -46,6 +50,9 @@ public class BookingController {
 	@PostMapping(value = "/booking/booking-add")
 	public ModelAndView bookingRegister(@ModelAttribute("bookingEntity") BookingEntity bookingEntity,
 			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/booking/booking-add");
 		try {
 			this.bookingService.add(bookingEntity);
@@ -59,22 +66,21 @@ public class BookingController {
 
 	@GetMapping(value = "/booking/booking-search")
 	public ModelAndView search(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/booking/booking-search");
 		Iterable<BookingEntity> list = this.bookingService.fetchAll();
 		modelAndView.addObject("bookingEntityList", list);
 		return modelAndView;
 	}
 
-	// TODO: corrigir -> erro ao converter array para string????
-	// WARNING: Resolved [org.springframework.beans.TypeMismatchException: Failed to convert value of type
-	// 'java.util.ArrayList' to required type 'java.lang.String'; nested exception is
-	// org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.util.ArrayList<?>]
-	// to type [java.lang.String] for value '[edu.les.entity.BookingEntity@4ae5c1d8]'; nested exception is
-	// org.springframework.core.convert.ConverterNotFoundException: No converter found capable of converting from type
-	// [edu.les.entity.BookingEntity] to type [java.lang.String]]
 	@PostMapping(value = "/booking/booking-search")
 	public ModelAndView search(@RequestParam("userCpf") Optional<String> cpf, RedirectAttributes redirectAttributes) {
-		ModelAndView modelAndView = new ModelAndView("redirect:/booking/booking-search");
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/booking/booking-search");
 		if (cpf.isPresent()) {
 			Iterable<BookingEntity> list = this.bookingService.fetchByCpf(cpf.get());
 			modelAndView.addObject("bookingEntityList", list);
@@ -84,6 +90,9 @@ public class BookingController {
 
 	@GetMapping(value = "/booking/booking-checkout/{id}")
 	public ModelAndView checkout(@PathVariable("id") Optional<Integer> bookingId) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/booking/booking-checkout");
 		try {
 			if (bookingId.isPresent()) {
@@ -99,6 +108,9 @@ public class BookingController {
 	@PostMapping(value = "/booking/booking-checkout")
 	public ModelAndView checkout(@ModelAttribute("bookingEntity") BookingEntity bookingEntity,
 			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		try {
 			this.bookingService.checkOut(bookingEntity.getBookingId());
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Successfully Checked Out!");

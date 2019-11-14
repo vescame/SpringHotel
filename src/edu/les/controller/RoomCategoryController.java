@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.RoomCategoryEntity;
 import edu.les.exception.ExceptionHandler;
+import edu.les.security.SpringHotelSession;
 import edu.les.service.RoomCategoryService;
 
 @Controller
@@ -27,6 +28,9 @@ public class RoomCategoryController {
 
 	@GetMapping(value = "/room-type/room-type-add")
 	public ModelAndView roomTypeView(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/room-type/room-type-add");
 		modelAndView.addObject(this.roomCategoryObj, new RoomCategoryEntity());
 		return modelAndView;
@@ -35,6 +39,9 @@ public class RoomCategoryController {
 	@PostMapping(value = "/room-type/room-type-add")
 	public ModelAndView roomTypeSave(@ModelAttribute(roomCategoryObj) RoomCategoryEntity roomCategoryEntity,
 			RedirectAttributes redir) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		try {
 			this.roomCategoryService.addOrUpdate(roomCategoryEntity);
 			redir.addFlashAttribute("STATUS_MESSAGE", "Category saved successfully!");
@@ -46,6 +53,9 @@ public class RoomCategoryController {
 
 	@GetMapping(value = "/room-type/room-type-search")
 	public ModelAndView roomTypeSearch(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/room-type/room-type-search");
 		modelAndView.addObject(this.roomCategoryObjList, this.roomCategoryService.fetchAll());
 		return modelAndView.addAllObjects(model.asMap());
@@ -54,6 +64,9 @@ public class RoomCategoryController {
 	@PostMapping(value = "/room-type/room-type-search")
 	public ModelAndView roomTypeSearch(@RequestParam("category") String category,
 			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/room-type/room-type-search");
 		try {
 			RoomCategoryEntity entity = this.roomCategoryService.fetchByCategory(category);
@@ -66,6 +79,9 @@ public class RoomCategoryController {
 
 	@GetMapping(value = { "/room-type/room-type-update", "/room-type/room-type-update/{id}" })
 	public ModelAndView update(@PathVariable("id") Optional<Integer> id, Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/room-type/room-type-update");
 		if (id.isPresent()) {
 			try {
@@ -80,6 +96,9 @@ public class RoomCategoryController {
 	@PostMapping(value = "/room-type/room-type-update")
 	public ModelAndView update(@ModelAttribute("roomCategoryEntity") RoomCategoryEntity roomCategoryEntity,
 			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		try {
 			this.roomCategoryService.addOrUpdate(roomCategoryEntity);
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Category updated!");
@@ -88,9 +107,12 @@ public class RoomCategoryController {
 		}
 		return new ModelAndView("redirect:/room-type/room-type-search");
 	}
-	
+
 	@GetMapping(value = { "/room-type/room-type-delete", "/room-type/room-type-delete/{id}" })
 	public ModelAndView delete(@PathVariable("id") Optional<Integer> id) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/room-type/room-type-search");
 		if (id.isPresent()) {
 			try {

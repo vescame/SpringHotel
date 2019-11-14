@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
+import edu.les.security.SpringHotelSession;
 import edu.les.service.UserService;
 
 @Controller
@@ -34,6 +35,9 @@ public class UserController {
 
 	@GetMapping(value = "/user/user-add")
 	public ModelAndView add(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/user/user-add");
 		modelAndView.addObject("userEntity", new UserEntity());
 		modelAndView.addObject("rolesList", this.roleList());
@@ -43,6 +47,9 @@ public class UserController {
 	@PostMapping(value = "/user/user-add")
 	public ModelAndView add(@ModelAttribute("userEntity") UserEntity userEntity,
 			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-add");
 		try {
 			this.userService.add(userEntity);
@@ -56,6 +63,9 @@ public class UserController {
 
 	@GetMapping(value = "/user/user-search")
 	public ModelAndView search(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/user/user-search");
 		Iterable<UserEntity> userEntityList = this.userService.fetchAll();
 		modelAndView.addObject("userEntityList", userEntityList);
@@ -63,7 +73,11 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/user/user-search")
-	public ModelAndView search(@RequestParam("userCpf") Optional<String> userCpf, RedirectAttributes redirectAttributes) {
+	public ModelAndView search(@RequestParam("userCpf") Optional<String> userCpf,
+			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
 			if (userCpf.isPresent()) {
@@ -78,6 +92,9 @@ public class UserController {
 
 	@GetMapping(value = "/user/user-update/{id}")
 	public ModelAndView update(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/user/user-update");
 		try {
 			if (cpf.isPresent()) {
@@ -96,6 +113,9 @@ public class UserController {
 	@PostMapping(value = "/user/user-update")
 	public ModelAndView update(@ModelAttribute("userEntity") UserEntity userEntity,
 			@RequestParam("OLD_PASSWORD") Optional<String> password, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
 			if (userEntity.getPassword().isEmpty() && password.isPresent()) {
@@ -113,6 +133,9 @@ public class UserController {
 
 	@GetMapping(value = "/user/user-delete/{id}")
 	public ModelAndView delete(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
 			if (cpf.isPresent()) {

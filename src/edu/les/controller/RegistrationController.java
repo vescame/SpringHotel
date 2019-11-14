@@ -19,7 +19,7 @@ import edu.les.service.RegistrationService;
 public class RegistrationController {
 	@Autowired
 	private RegistrationService registrationService;
-	
+
 	private final String registerUrl = "/registration";
 	private final String statusKey = "STATUS_MESSAGE";
 	private final String statusValueSuccess = "Usuario registrado com sucesso!";
