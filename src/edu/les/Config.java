@@ -19,6 +19,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -107,4 +108,11 @@ public class Config implements WebMvcConfigurer {
 	public PlatformTransactionManager transactionManager() {
 		return new JpaTransactionManager(entityManagerFactory());
 	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//		WebMvcConfigurer.super.addResourceHandlers(registry);
+		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+	}
+
 }
