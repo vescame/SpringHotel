@@ -25,9 +25,10 @@
 		</h3>
 		<h4 th:text=${STATUS_MESSAGE}></h4>
 	</div>
-	<form th:object="${roomEntity}" th:action="@{/room/room-update/{id} (id=*{roomId})}" method="post">
+	<form th:object="${roomEntity}" th:action="@{/room/room-update}" method="post">
 		<div>
 			<div>
+				<label>ID</label>
 				<input th:field="*{roomId}" type="text" maxlength="5" readonly="readonly">
 			</div>
 		</div>

@@ -92,7 +92,7 @@ public class RoomController {
 		if (!SpringHotelSession.isAdmin()) {
 			return new ModelAndView("redirect:/login");
 		}
-		ModelAndView modelAndView = new ModelAndView("/room/room-search");
+		ModelAndView modelAndView = new ModelAndView("redirect:/room/room-search");
 		try {
 			this.roomService.addOrUpdate(roomEntity);
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Room updated!");
