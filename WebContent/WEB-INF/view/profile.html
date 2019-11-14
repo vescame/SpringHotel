@@ -87,15 +87,17 @@
 		<div>
 			<div>
 				<label>CPF</label>
-				<input th:field="*{userCpf}" maxlength="11" type="text" id="inputCpf" placeholder="CPF"
-					readonly="readonly">
+				<input th:field="*{userCpf}" maxlength="11" type="text" placeholder="CPF" readonly="readonly">
 			</div>
 		</div>
 		<div>
 			<div>
 				<label>Name</label>
-				<input th:field="*{username}" maxlength="35" type="text" id="txtUsername" placeholder="Name">
+				<input th:field="*{username}" maxlength="35" type="text" placeholder="Name">
 			</div>
+		</div>
+		<div>
+			<input th:field="*{userRole}" type="hidden" />
 		</div>
 		<div>
 			<div>
@@ -133,15 +135,15 @@
 		<div>
 			<div>
 				<label>House Number</label>
-				<input th:field="*{houseNumber}" type="text" id="txtHouseNumber" placeholder="ex.: 443">
+				<input th:field="*{houseNumber}" type="text" placeholder="ex.: 443">
 			</div>
 			<div>
 				<label>Telephone</label>
-				<input th:field="*{telephoneNumber}" type="tel" id="txtTelephone" value="11 5555 5555" maxlength="15">
+				<input th:field="*{telephoneNumber}" type="tel" value="11 5555 5555" maxlength="15">
 			</div>
 			<div>
 				<label>Celphone</label>
-				<input th:field="*{celphoneNumber}" type="tel" id="txtCelphone" value="11 5555 5555" maxlength="15">
+				<input th:field="*{celphoneNumber}" type="tel" value="11 5555 5555" maxlength="15">
 			</div>
 			<div>
 				<label>Birthday</label>
@@ -151,8 +153,7 @@
 		<div>
 			<div>
 				<label>Email</label>
-				<input th:field="*{email}" maxlength="35" type="email" id="inputEmail4" placeholder="Email"
-					readonly="readonly">
+				<input th:field="*{email}" maxlength="35" type="email" placeholder="Email">
 			</div>
 			<div>
 				<input th:field="*{password}" type="hidden">

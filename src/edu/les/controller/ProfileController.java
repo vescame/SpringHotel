@@ -29,11 +29,12 @@ public class ProfileController {
 	}
 
 	@PostMapping(value = "/profile")
-	public ModelAndView loginView(@ModelAttribute() UserEntity userEntity, RedirectAttributes redirectAttributes) {
+	public ModelAndView loginView(@ModelAttribute("userEntity") UserEntity userEntity, RedirectAttributes redirectAttributes) {
 		try {
+			System.out.println(userEntity.getUserRole());
 			this.userService.update(userEntity);
-			redirectAttributes.addFlashAttribute("PROFILE_STATUS",
-					"Your profile have been updated, logout and login to apply changes to the system.");
+			redirectAttributes.addFlashAttribute("PROFILE_STATUS", "Your profile have been updated!");
+			SpringHotelSession.loginUser(this.userService.findByCpf(userEntity.getUserCpf()));
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute("PROFILE_STATUS", e.getMessage());
 		}
