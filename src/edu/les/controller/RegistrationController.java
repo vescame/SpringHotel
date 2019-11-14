@@ -3,11 +3,9 @@ package edu.les.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,28 +18,22 @@ public class RegistrationController {
 	@Autowired
 	private RegistrationService registrationService;
 
-	private final String registerUrl = "/registration";
-	private final String statusKey = "STATUS_MESSAGE";
-	private final String statusValueSuccess = "Usuario registrado com sucesso!";
-	private final String userEntityThObj = "userEntity";
-
-	@RequestMapping(value = registerUrl, method = RequestMethod.GET)
+	@GetMapping(value = "/registration")
 	public ModelAndView registerView(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.registerUrl);
-		modelAndView.addObject(this.userEntityThObj, new UserEntity());
+		ModelAndView modelAndView = new ModelAndView("/registration");
+		modelAndView.addObject("userEntity", new UserEntity());
 		return modelAndView;
 	}
 
-	@RequestMapping(value = registerUrl, method = RequestMethod.POST)
-	public ModelAndView newRegister(@ModelAttribute(userEntityThObj) UserEntity userEntity,
-			RedirectAttributes redirectAttributes, BindingResult result) {
-		ModelMap modelMap = new ModelMap();
+	@PostMapping(value = "/registration")
+	public ModelAndView newRegister(@ModelAttribute("userEntity") UserEntity userEntity,
+			RedirectAttributes redirectAttributes) {
 		try {
 			this.registrationService.registerUser(userEntity);
-			redirectAttributes.addFlashAttribute(this.statusKey, this.statusValueSuccess);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Usuario registrado com sucesso!");
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusKey, e.getMessage());
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
 		}
-		return new ModelAndView("redirect:" + this.registerUrl, modelMap);
+		return new ModelAndView("redirect:/registration");
 	}
 }

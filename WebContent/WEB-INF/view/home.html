@@ -24,7 +24,7 @@
 						<a th:href="@{/room-type/room-type-add}">Room Category</a>
 					</li>
 				</div>
-				<li>
+				<li th:if="${!IS_ADMIN}">
 					<a th:href="@{/profile}">Profile</a>
 				</li>
 				<li>
@@ -33,6 +33,51 @@
 			</ul>
 		</div>
 	</nav>
+	<div th:if="${!IS_ADMIN}">
+		<nav th:object="${user}">
+			<tr>
+				<td>
+					<label>Name</label>
+					<label th:text="*{username}"></label>
+				</td>
+				<td>
+					<label>CPF:</label>
+					<label th:text="*{userCpf}"></label>
+				</td>
+			</tr>
+		</nav>
+		<h3>All Bookings</h3>
+		<table th:unless="${#lists.isEmpty(userBookings)}">
+				<thead>
+					<tr>
+						<th>CPF</th>
+						<th>Name</th>
+						<th>Room Number</th>
+						<th>Check In</th>
+						<th>Check Out</th>
+						<th>Days Past</th>
+						<th>Status</th>
+						<th>Total:</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="b : ${userBookings}">
+						<td th:text="${b.userEntity.userCpf}"/>
+						<td th:text="${b.userEntity.username}"/>
+						<td th:text="${b.roomEntity.roomNumber}"/>
+						<td th:text="${b.checkIn}"/>
+						<td th:text="${b.checkOut}"/>
+						<td th:text="${b.daysPast}"/>
+						<td th:text="${b.status}"/>
+						<td th:text="${b.finalAmout}"/>
+						<td th:switch="${b.status}">
+							<span th:case="'I'">Fechada</span>
+							<span th:case="'A'">Aberta</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+	</div>
 </body>
 
 </html>
