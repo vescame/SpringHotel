@@ -87,4 +87,16 @@ public class UserDAO {
 		}
 		return nasc;
 	}
+
+	public void inactivateUser(String cpf) throws ExceptionHandler {
+		try {
+			Connection con = ResourceMan.getInstance().getConnection();
+			PreparedStatement pstmt = con.prepareCall("{CALL inactivateUser(?)}");
+			pstmt.setString(1, cpf);
+			pstmt.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionHandler("There\'s no user with CPF: " + cpf);
+		}
+	}
 }

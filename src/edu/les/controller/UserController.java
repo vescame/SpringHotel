@@ -2,12 +2,14 @@ package edu.les.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -82,6 +84,19 @@ public class UserController {
 			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
 		}
 		return modelAndView;
+	}
+
+	@GetMapping(value = "user/user-search/{id}")
+	public ModelAndView inactivateUser(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirAttr) {
+		try {
+			if (cpf.isPresent()) {
+				new UserDAO().inactivateUser(cpf.get());
+				redirAttr.addFlashAttribute("STATUS_MESSAGE", "User with CPF:" + cpf.get() + " is now inactive!");
+			}
+		} catch (ExceptionHandler e) {
+			redirAttr.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+		}
+		return new ModelAndView("redirect:" + this.userSearchUrl);
 	}
 
 	@GetMapping(value = userDeleteUrl)

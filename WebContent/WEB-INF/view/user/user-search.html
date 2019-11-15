@@ -70,6 +70,9 @@
 					<td th:text="*{dateOfBirth}" />
 					<td th:text="*{email}" />
 					<td th:text="*{userRole}" />
+					<td>
+						<a th:href="@{/user/user-search/{id} (id=*{userCpf})}">Inactivate</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -88,6 +91,7 @@
 					<th>Birthday</th>
 					<th>Email</th>
 					<th>Role</th>
+					<th>Status</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -101,6 +105,7 @@
 					<td th:text="${b.dateOfBirth}"/>
 					<td th:text="${b.email}"/>
 					<td th:text="${b.userRole}"/>
+					<td th:text="${b.status}" />
 				</tr>
 			</tbody>
 		</table>
