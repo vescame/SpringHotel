@@ -87,6 +87,47 @@ public class UserDAO {
 		}
 		return nasc;
 	}
+	
+	public UserEntity update(UserEntity userEntity) throws ExceptionHandler {
+		if (!UserValidation.hasErrors(userEntity)) {
+			try {
+				AddressDAO addressDAO = new AddressDAO();
+				addressDAO.insert(userEntity.getAddressEntity());
+			} catch (ExceptionHandler e) {
+				System.out.println("address already exists");
+			}
+			try {
+				Connection con = ResourceMan.getInstance().getConnection();
+				PreparedStatement pstmt = con
+						.prepareStatement("update hotel_user set "
+								+ "celphone_number = ?,"
+								+ "date_of_birth = ?,"
+								+ "email = ?,"
+								+ "house_number = ?,"
+								+ "password = ?,"
+								+ "telephone_number = ?,"
+								+ "user_role = ?,"
+								+ "user_name = ?,"
+								+ "zip_code = ? where user_cpf = ?");
+				pstmt.setString(1, userEntity.getCelphoneNumber());
+				Date b = this.formatDate(userEntity.getDateOfBirth());
+				pstmt.setDate(2, new java.sql.Date(b.getTime()));
+				pstmt.setString(3, userEntity.getEmail());
+				pstmt.setInt(4, userEntity.getHouseNumber());
+				pstmt.setString(5, userEntity.getPassword());
+				pstmt.setString(6, userEntity.getTelephoneNumber());
+				pstmt.setString(7, userEntity.getUserRole());
+				pstmt.setString(8, userEntity.getUsername());
+				pstmt.setString(9, userEntity.getAddressEntity().getZipCode());
+				pstmt.setString(10, userEntity.getUserCpf());
+				pstmt.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new ExceptionHandler("Failed to update user with cpf " + userEntity.getUserCpf());
+			}
+		}
+		return userEntity;
+	}
 
 	public void inactivateUser(String cpf) throws ExceptionHandler {
 		try {

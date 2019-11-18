@@ -149,7 +149,7 @@ public class UserController {
 			if (userEntityUpdated.getPassword().length() == 0) {
 				userEntityUpdated.setPassword(oldPassword);
 			}
-			this.userService.update(userEntityUpdated);
+			new UserDAO().update(userEntityUpdated);
 			redirectAttributes.addFlashAttribute(this.statusMessage, "User Updated!");
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
