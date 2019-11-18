@@ -21,12 +21,6 @@
 				<li>
 					<a th:href="@{/user/user-add}">Add User</a>
 				</li>
-				<li>
-					<a th:href="@{/user/user-update}">Update User</a>
-				</li>
-				<li>
-					<a th:href="@{/user/user-delete}">Delete User</a>
-				</li>
 			</ul>
 		</div>
 	</nav>
@@ -71,7 +65,13 @@
 					<td th:text="*{email}" />
 					<td th:text="*{userRole}" />
 					<td>
+						<a th:href="@{/user/user-update/{id} (id=*{userCpf})}">Update</a>
+					</td>
+					<td>
 						<a th:href="@{/user/user-search/{id} (id=*{userCpf})}">Inactivate</a>
+					</td>
+					<td>
+						<a th:href="@{/user/user-delete/{id} (id=*{userCpf})}">Delete</a>
 					</td>
 				</tr>
 			</tbody>

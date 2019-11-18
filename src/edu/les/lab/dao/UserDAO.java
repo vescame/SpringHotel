@@ -75,18 +75,6 @@ public class UserDAO {
 		}
 		return u;
 	}
-
-	private Date formatDate(Date d) {
-		DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		String nascString = sdf.format(d);
-		Date nasc = new Date();
-		try {
-			nasc = sdf.parse(nascString);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return nasc;
-	}
 	
 	public UserEntity update(UserEntity userEntity) throws ExceptionHandler {
 		if (!UserValidation.hasErrors(userEntity)) {
@@ -128,6 +116,21 @@ public class UserDAO {
 		}
 		return userEntity;
 	}
+	
+	public void delete(String cpf) throws ExceptionHandler {
+		try {
+			if (cpf == null) {
+				throw new ExceptionHandler("Cpf é nulo!");
+			}
+			Connection con = ResourceMan.getInstance().getConnection();
+			PreparedStatement pstmt = con.prepareStatement("delete from hotel_user where user_cpf = ?");
+			pstmt.setString(1, cpf);
+			pstmt.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionHandler("Failed to delete user: " + cpf);
+		}
+	}
 
 	public void inactivateUser(String cpf) throws ExceptionHandler {
 		try {
@@ -139,5 +142,17 @@ public class UserDAO {
 			e.printStackTrace();
 			throw new ExceptionHandler("There\'s no user with CPF: " + cpf);
 		}
+	}
+	
+	private Date formatDate(Date d) {
+		DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String nascString = sdf.format(d);
+		Date nasc = new Date();
+		try {
+			nasc = sdf.parse(nascString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return nasc;
 	}
 }
