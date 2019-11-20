@@ -25,7 +25,7 @@ public class RoomCategoryEntity {
 		this.roomCategoryId = roomCategoryId;
 	}
 
-	@Column(name = "category", nullable = false, length = 25)
+	@Column(name = "category", nullable = false, length = 25, unique = true)
 	public String getCategory() {
 		return category;
 	}
