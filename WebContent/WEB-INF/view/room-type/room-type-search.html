@@ -3,7 +3,7 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Search Room Category</title>
-	<link rel="stylesheet" href=../resources/css/table.css" />
+	<link rel="stylesheet" href="../resources/css/table.css" />
 </head>
 
 <body>
@@ -23,48 +23,8 @@
 		</h3>
 		<h4 th:text=${STATUS_MESSAGE}></h4>
 	</div>
-	<form th:action="@{/room-type/room-type-search}" method="post">
-		<div>
-			<div>
-				<label>Category</label>
-				<input name="category" maxlength="25" type="text" placeholder="Category">
-				<button type="submit">Search</button>
-			</div>
-		</div>
-	</form>
-	<div th:if=${roomCategoryEntity}>
-		<h3>Selected Room Categoriy</h3>
-		<table>
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Category</th>
-					<th>Price</th>
-					<th>Max. People</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:object="${roomCategoryEntity}">
-					<td th:text="*{roomCategoryId}" />
-					<td th:text="*{category}" />
-					<td th:text="*{price}" />
-					<td th:text="*{maxPeople}" />
-					<td>
-						<a th:href="@{/room-type/room-type-update/{id} (id=*{roomCategoryId})}">
-							Edit
-						</a>
-					</td>
-					<td>
-						<a th:href="@{/room-type/room-type-delete/{id} (id=*{roomCategoryId})}">
-							Delete
-						</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
 	<div>
-		<h3>All Room Categories</h3>
+		<h3>Room Categories</h3>
 		<table th:unless="${#lists.isEmpty(roomCategoryList)}">
 			<thead>
 				<tr>
@@ -80,6 +40,16 @@
 					<td th:text="${b.category}"/>
 					<td th:text="${b.price}"/>
 					<td th:text="${b.maxPeople}"/>
+					<td>
+						<a th:href="@{/room-type/room-type-update/{id} (id=${b.roomCategoryId})}">
+							Edit
+						</a>
+					</td>
+					<td>
+						<a th:href="@{/room-type/room-type-delete/{id} (id=${b.roomCategoryId})}">
+							Delete
+						</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>

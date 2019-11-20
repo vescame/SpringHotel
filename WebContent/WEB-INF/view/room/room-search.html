@@ -3,7 +3,7 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Room List</title>
-	<link rel="stylesheet" href=../resources/css/table.css" />
+	<link rel="stylesheet" href="../resources/css/table.css" />
 </head>
 
 <body>
@@ -24,6 +24,7 @@
 		<h4 th:text=${STATUS_MESSAGE}></h4>
 	</div>
 	<div>
+		<h3>All Rooms</h3>
 		<table th:unless="${#lists.isEmpty(roomEntityList)}">
 			<thead>
 				<tr>
