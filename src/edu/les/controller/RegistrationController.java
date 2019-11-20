@@ -21,7 +21,9 @@ public class RegistrationController {
 	@GetMapping(value = "/registration")
 	public ModelAndView registerView(Model model) {
 		ModelAndView modelAndView = new ModelAndView("/registration");
-		modelAndView.addObject("userEntity", new UserEntity());
+		if (!model.containsAttribute("userEntity")) {
+			modelAndView.addObject("userEntity", new UserEntity());
+		}
 		return modelAndView;
 	}
 
