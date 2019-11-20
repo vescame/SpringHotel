@@ -61,9 +61,10 @@ public class Config implements WebMvcConfigurer {
 		try {
 			DriverManagerDataSource dataSource = new DriverManagerDataSource();
 			dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-			dataSource.setUsername("azure");
-			dataSource.setPassword("6#vWHD_$");
-			dataSource.setUrl("jdbc:mysql://127.0.0.1:50801/localdb?useTimezone=true&serverTimezone=UTC");
+			dataSource.setUsername("hotel");
+			dataSource.setPassword("mysqldb8");
+			dataSource.setUrl(
+					"jdbc:mysql://localhost:3306/hoteldb?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC");
 			return dataSource;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,14 +80,7 @@ public class Config implements WebMvcConfigurer {
 	@Bean
 	public Properties hibernateProperties() {
 		Properties hibernateProp = new Properties();
-		String dialect = null;
-		try {
-			 dialect = Class.forName("org.hibernate.dialect.MySQL57Dialect").getName();
-		} catch (ClassNotFoundException e) {
-			dialect = "org.hibernate.dialect.MySQL8Dialect";
-		} finally {
-			hibernateProp.put("hibernate.dialect", dialect);
-		}
+		hibernateProp.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 		hibernateProp.put("hibernate.hbm2ddl.auto", "update");
 		hibernateProp.put("hibernate.format_sql", false);
 		hibernateProp.put("hibernate.use_sql_comments", true);
