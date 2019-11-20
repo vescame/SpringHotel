@@ -31,15 +31,14 @@ import org.thymeleaf.templatemode.TemplateMode;
 @EnableWebMvc
 @ComponentScan("edu.les")
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"edu.les.repository"})
+@EnableJpaRepositories(basePackages = { "edu.les.repository" })
 public class Config implements WebMvcConfigurer {
 	@Autowired
 	private ApplicationContext applicationContext;
 
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
-		SpringResourceTemplateResolver templateResolver =
-				new SpringResourceTemplateResolver();
+		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/view/");
 		templateResolver.setSuffix(".html");
@@ -59,20 +58,19 @@ public class Config implements WebMvcConfigurer {
 
 	@Bean
 	public DataSource dataSource() {
-	try {
+		try {
 			DriverManagerDataSource dataSource = new DriverManagerDataSource();
-			dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-			dataSource.setUsername("hotel");
-			dataSource.setPassword("mdb52");
-			dataSource.setUrl(
-				"jdbc:mariadb://localhost/hotel?createDatabaseIfNotExist=true"); 
+			dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+			dataSource.setUsername("azure");
+			dataSource.setPassword("6#vWHD_$");
+			dataSource.setUrl("jdbc:mysql://127.0.0.1:50801/localdb?useTimezone=true&serverTimezone=UTC");
 			return dataSource;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	@Bean
 	public JpaVendorAdapter jpaVendorAdapter() {
 		return new HibernateJpaVendorAdapter();
@@ -81,8 +79,14 @@ public class Config implements WebMvcConfigurer {
 	@Bean
 	public Properties hibernateProperties() {
 		Properties hibernateProp = new Properties();
-		hibernateProp.put("hibernate.dialect", 
-			"org.hibernate.dialect.MariaDB53Dialect");
+		String dialect = null;
+		try {
+			 dialect = Class.forName("org.hibernate.dialect.MySQL57Dialect").getName();
+		} catch (ClassNotFoundException e) {
+			dialect = "org.hibernate.dialect.MySQL8Dialect";
+		} finally {
+			hibernateProp.put("hibernate.dialect", dialect);
+		}
 		hibernateProp.put("hibernate.hbm2ddl.auto", "update");
 		hibernateProp.put("hibernate.format_sql", false);
 		hibernateProp.put("hibernate.use_sql_comments", true);
@@ -92,11 +96,10 @@ public class Config implements WebMvcConfigurer {
 		hibernateProp.put("hibernate.jdbc.fetch_size", 50);
 		return hibernateProp;
 	}
-	
+
 	@Bean
 	public EntityManagerFactory entityManagerFactory() {
-		LocalContainerEntityManagerFactoryBean factoryBean =
-			new LocalContainerEntityManagerFactoryBean();
+		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setPackagesToScan("edu.les.entity");
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setJpaProperties(hibernateProperties());
