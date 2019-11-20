@@ -28,6 +28,9 @@ public class UserService {
 
 	public void add(UserEntity userEntity) throws ExceptionHandler {
 		if (!this.hasErrors(userEntity)) {
+			if (this.userRepository.findById(userEntity.getUserCpf()).isPresent()) {
+				throw new ExceptionHandler("User with CPF [" + userEntity.getUserCpf() + "] already exists");
+			}
 			this.userRepository.save(userEntity);
 		}
 	}
