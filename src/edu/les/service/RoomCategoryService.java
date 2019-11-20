@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 
 import edu.les.entity.RoomCategoryEntity;
@@ -22,7 +23,11 @@ public class RoomCategoryService {
 	
 	public void addOrUpdate(RoomCategoryEntity roomCategoryEntity) throws ExceptionHandler {
 		if (!this.hasErrors(roomCategoryEntity)) {
-			this.roomCategoryRepository.save(roomCategoryEntity);
+			try {
+				this.roomCategoryRepository.save(roomCategoryEntity);
+			} catch (JpaSystemException e) {
+				throw new ExceptionHandler("A category with name: \"" + roomCategoryEntity.getCategory() + "\" already exists.");
+			}
 		}
 	}
 	
