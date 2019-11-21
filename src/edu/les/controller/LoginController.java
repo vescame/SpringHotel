@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.UserEntity;
+import edu.les.exception.ExceptionHandler;
 import edu.les.security.SpringHotelSession;
 import edu.les.service.LoginService;
 
@@ -29,12 +30,12 @@ public class LoginController {
 	public ModelAndView loginUser(@ModelAttribute("userEntity") UserEntity userEntity,
 			RedirectAttributes redirectAttributes) {
 		String url = "redirect:/login";
-		UserEntity userSessionInstance = this.loginService.login(userEntity);
-		if (userSessionInstance != null) {
+		try {
+			UserEntity userSessionInstance = this.loginService.login(userEntity);
 			url = "redirect:/home";
 			SpringHotelSession.loginUser(userSessionInstance);
-		} else {
-			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Invalid credentials!");
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
 		}
 		return new ModelAndView(url);
 	}
