@@ -39,6 +39,12 @@ public class BookingService {
 			}
 		}
 	}
+	
+	public boolean hasActiveBooking(String cpf) {
+		List<BookingEntity> bookings = new ArrayList<BookingEntity>();
+		this.bookingRepository.hasActiveBooking(cpf).forEach(bookings::add);
+		return bookings.size() >= 1;
+	}
 
 	public Iterable<BookingEntity> fetchAll() {
 		return this.bookingRepository.findAll();

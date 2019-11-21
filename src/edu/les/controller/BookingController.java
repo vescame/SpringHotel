@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.BookingEntity;
 import edu.les.entity.RoomEntity;
+import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
 import edu.les.security.SpringHotelSession;
 import edu.les.service.BookingService;
@@ -31,26 +32,52 @@ public class BookingController {
 	private Iterable<RoomEntity> disponibleRooms() throws ExceptionHandler {
 		return this.roomService.fetchDisponible();
 	}
+	
+	private boolean isLogged() {
+		return SpringHotelSession.getLoggedInUser() != null;
+	}
+	
+	private boolean isAdmin() {
+		return SpringHotelSession.isAdmin();
+	}
 
 	@GetMapping(value = "/booking/booking-add")
-	public ModelAndView bookingView(Model model) {
-		if (!SpringHotelSession.isAdmin()) {
+	public ModelAndView bookingView(Model model, RedirectAttributes redirectAttributes) {
+		if (!this.isLogged()) {
 			return new ModelAndView("redirect:/login");
 		}
 		ModelAndView modelAndView = new ModelAndView("/booking/booking-add");
 		try {
+			String cpf = SpringHotelSession.getLoggedInUser().getUserCpf();
+			if (!this.isAdmin()){
+				if (this.bookingService.hasActiveBooking(cpf)) {
+					redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "You already have an active booking!");
+					return new ModelAndView("redirect:/home");
+				}
+ 				modelAndView.addObject("IS_ADMIN", false);
+			} else {
+				modelAndView.addObject("IS_ADMIN", true);
+			}
 			modelAndView.addObject("roomList", this.disponibleRooms());
+			modelAndView.addObject("bookingEntity", this.userBooking(cpf));
 		} catch (ExceptionHandler e) {
 			modelAndView.addObject("STATUS_MESSAGE", e.getMessage());
 		}
-		modelAndView.addObject("bookingEntity", new BookingEntity());
 		return modelAndView;
+	}
+	
+	private BookingEntity userBooking(String cpf) {
+		BookingEntity booking = new BookingEntity();
+		UserEntity userEntity = new UserEntity();
+		userEntity.setUserCpf(cpf);
+		booking.setUserEntity(userEntity);
+		return booking;
 	}
 
 	@PostMapping(value = "/booking/booking-add")
 	public ModelAndView bookingRegister(@ModelAttribute("bookingEntity") BookingEntity bookingEntity,
 			RedirectAttributes redirectAttributes) {
-		if (!SpringHotelSession.isAdmin()) {
+		if (!this.isLogged()) {
 			return new ModelAndView("redirect:/login");
 		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/booking/booking-add");

@@ -15,4 +15,7 @@ public interface BookingRepository extends CrudRepository<BookingEntity, Integer
 
 	@Query("FROM booking WHERE status = \'A\'")
 	Iterable<BookingEntity> fetchActive();
+
+	@Query("FROM booking WHERE status = \'A\' AND user_cpf = :v_cpf")
+	Iterable<BookingEntity> hasActiveBooking(@Param("v_cpf") String cpf);
 }

@@ -10,7 +10,7 @@
 		<a th:href="@{/home}">Spring Hotel</a>
 		<div>
 			<ul>
-				<li>
+				<li th:if="${IS_ADMIN}">
 					<a th:href="@{/booking/booking-search}">View Booking</a>
 				</li>
 			</ul>
@@ -25,7 +25,8 @@
 	<form th:object="${bookingEntity}" th:action="@{/booking/booking-add}" method="post">
 		<div>
 			<label>CPF</label>
-			<input th:field="*{userEntity.userCpf}" maxlength="11" type="text">
+			<input th:if="${IS_ADMIN}" th:field="*{userEntity.userCpf}" maxlength="11" type="text">
+			<input th:if="${!IS_ADMIN}" th:field="*{userEntity.userCpf}" maxlength="11" type="text" readonly="readonly">
 		</div>
 		<div>
 			<label>Check In</label>
@@ -44,7 +45,7 @@
 		</div>
 		<ul>
 			<li th:each="r : ${roomList}">
-				<input th:field="*{roomEntity.roomId}" type="radio" th:value="${r.roomId}" th:text="${r.roomId}" />
+				<input th:field="*{roomEntity.roomId}" type="radio" th:value="${r.roomId}" />
 				<label> Room Number: </label>
 				<label th:text="${r.roomNumber}"></label>
 				<label> Category: </label>
