@@ -11,12 +11,12 @@
 		<a th:href="@{/home}">Spring Hotel</a>
 		<div>
 			<ul>
+				<li>
+					<a th:href="@{/booking/booking-add}">Bookings</a>
+				</li>
 				<div th:if="${IS_ADMIN}">
 					<li>
 						<a th:href="@{/user/user-add}">Users</a>
-					</li>
-					<li>
-						<a th:href="@{/booking/booking-add}">Bookings</a>
 					</li>
 					<li>
 						<a th:href="@{/room/room-add}">Rooms</a>
@@ -34,6 +34,11 @@
 			</ul>
 		</div>
 	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<strong>
+			<h4 th:text=${STATUS_MESSAGE}></h4>
+		</strong>
+	</div>
 	<div th:if="${!IS_ADMIN}">
 		<nav th:object="${user}">
 			<tr>
