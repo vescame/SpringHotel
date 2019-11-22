@@ -25,9 +25,7 @@
 		</div>
 	</nav>
 	<div th:if="${STATUS_MESSAGE}">
-		<strong>
-			<h4 th:text=${STATUS_MESSAGE}></h4>
-		</strong>
+		<strong th:text="${STATUS_MESSAGE}"></strong>
 	</div>
 	<div th:if="${!IS_ADMIN}">
 		<nav th:object="${user}">
