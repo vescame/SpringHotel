@@ -39,7 +39,9 @@ public class UserController {
 			return new ModelAndView("redirect:/login");
 		}
 		ModelAndView modelAndView = new ModelAndView("/user/user-add");
-		modelAndView.addObject("userEntity", new UserEntity());
+		if (!model.containsAttribute("userEntity")) {
+			modelAndView.addObject("userEntity", new UserEntity());
+		}
 		modelAndView.addObject("rolesList", this.roleList());
 		return modelAndView;
 	}
