@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.les.entity.UserEntity;
 import edu.les.entity.UserReportViewModel;
 import edu.les.exception.ExceptionHandler;
+import edu.les.lab.dao.UserDAO;
 import edu.les.security.SpringHotelSession;
 import edu.les.service.UserService;
 
@@ -55,7 +56,7 @@ public class UserController {
 		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-add");
 		try {
-			this.userService.add(userEntity);
+			new UserDAO().insert(userEntity);
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User successfully created!");
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Failed to create user!" + e.getMessage());
@@ -84,7 +85,7 @@ public class UserController {
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
 			if (userCpf.isPresent()) {
-				UserEntity userEntity = this.userService.findByCpf(userCpf.get());
+				UserEntity userEntity = new UserDAO().select(userCpf.get());
 				redirectAttributes.addFlashAttribute("userEntity", userEntity);
 			}
 		} catch (ExceptionHandler e) {
@@ -112,6 +113,24 @@ public class UserController {
 		}
 		return modelAndView;
 	}
+	
+	@GetMapping(value = "/user/user-report/{id}")
+	public ModelAndView report(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/user/user-report");
+		try {
+			if (cpf.isPresent()) {
+				UserReportViewModel report = new UserDAO().report(cpf.get());
+				modelAndView.addObject("report", report);
+			}
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addAttribute("STATUS_MESSAGE", e.getMessage());
+			return new ModelAndView("redirect:/user/user-search");
+		}
+		return modelAndView;
+	}
 
 	@PostMapping(value = "/user/user-update")
 	public ModelAndView update(@ModelAttribute("userEntity") UserEntity userEntity,
@@ -126,7 +145,7 @@ public class UserController {
 					userEntity.setPassword(password.get());
 				}
 			}
-			this.userService.update(userEntity);
+			new UserDAO().update(userEntity);
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User Updated!");
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
@@ -144,7 +163,7 @@ public class UserController {
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
 			if (cpf.isPresent()) {
-				this.userService.delete(cpf.get());
+				new UserDAO().delete(cpf.get());
 			}
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());

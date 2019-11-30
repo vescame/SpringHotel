@@ -101,7 +101,7 @@ public class UserDAO {
 				pstmt.setString(8, userEntity.getUsername());
 				pstmt.setString(9, userEntity.getAddressEntity().getZipCode());
 				pstmt.setString(10, userEntity.getUserCpf());
-				pstmt.executeQuery();
+				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new ExceptionHandler("Failed to update user with cpf " + userEntity.getUserCpf());
