@@ -59,11 +59,11 @@ public class Config implements WebMvcConfigurer {
 	public DataSource dataSource() {
 	try {
 			DriverManagerDataSource dataSource = new DriverManagerDataSource();
-			dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
+			dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			dataSource.setUsername("hotel");
-			dataSource.setPassword("mdb52");
+			dataSource.setPassword("mysqldb8");
 			dataSource.setUrl(
-				"jdbc:mariadb://localhost/hotel?createDatabaseIfNotExist=true"); 
+				"jdbc:mysql://localhost:3306/hoteldb?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC"); 
 			return dataSource;
 		} catch (Exception e) {
 			e.printStackTrace();
