@@ -2,7 +2,7 @@
 
 <head>
 	<meta charset="ISO-8859-1">
-	<title>Search Room Category</title>
+	<title>Room List</title>
 	<link rel="stylesheet" href="../resources/css/table.css" />
 </head>
 
@@ -12,7 +12,7 @@
 		<div>
 			<ul>
 				<li>
-					<a th:href="@{/room-type/room-type-add}">Add Room Category</a>
+					<a th:href="@{/room/room-add}">New Room</a>
 				</li>
 			</ul>
 		</div>
@@ -24,30 +24,32 @@
 		<h4 th:text=${STATUS_MESSAGE}></h4>
 	</div>
 	<div>
-		<h3>Room Categories</h3>
-		<table th:unless="${#lists.isEmpty(roomCategoryList)}">
+		<h3>All Rooms</h3>
+		<table th:unless="${#lists.isEmpty(roomEntityList)}">
 			<thead>
 				<tr>
 					<th>Id</th>
+					<th>Room Number</th>
 					<th>Category</th>
 					<th>Price</th>
 					<th>Max. People</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="b : ${roomCategoryList}">
-					<td th:text="${b.roomCategoryId}"/>
-					<td th:text="${b.category}"/>
-					<td th:text="${b.price}"/>
-					<td th:text="${b.maxPeople}"/>
+				<tr th:each="b : ${roomEntityList}">
+					<td th:text="${b.roomId}"/>
+					<td th:text="${b.roomNumber}"/>
+					<td th:text="${b.roomCategory.category}"/>
+					<td th:text="${b.roomCategory.price}"/>
+					<td th:text="${b.roomCategory.maxPeople}"/>
 					<td>
-						<a th:href="@{/room-type/room-type-update/{id} (id=${b.roomCategoryId})}">
+						<a th:href="@{/room/room-update/{id} (id=${b.roomId})}">
 							Edit
 						</a>
 					</td>
 					<td>
-						<a th:href="@{/room-type/room-type-delete/{id} (id=${b.roomCategoryId})}">
-							Delete
+						<a th:href="@{/room/room-delete/{id} (id=${b.roomId})}">
+							<span>Delete</span>
 						</a>
 					</td>
 				</tr>

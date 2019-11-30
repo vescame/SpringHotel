@@ -113,7 +113,7 @@ public class UserEntity {
 	}
 
 	@OneToOne(fetch = FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
+	@Cascade({CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "zip_code")
 	public AddressEntity getAddressEntity() {
 		return addressEntity;

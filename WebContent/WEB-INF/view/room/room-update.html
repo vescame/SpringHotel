@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Room Update</title>
+</head>
+
+<body>
+	<nav>
+		<a th:href="@{/home}">Spring Hotel</a>
+		<div>
+			<ul>
+				<li>
+					<a th:href="@{/room/room-add}">New Room</a>
+				</li>
+				<li>
+					<a th:href="@{/room/room-search}">Room List</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div th:if="${STATUS_MESSAGE}">
+		<h3>
+			<strong>Status</strong>
+		</h3>
+		<h4 th:text=${STATUS_MESSAGE}></h4>
+	</div>
+	<form th:object="${roomEntity}" th:action="@{/room/room-update}" method="post">
+		<div>
+			<div>
+				<label>ID</label>
+				<input th:field="*{roomId}" type="text" maxlength="5" readonly="readonly">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Room Number</label>
+				<input th:field="*{roomNumber}" maxlength="3" type="text" placeholder="ex.: 34">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>Category</label>
+				<ul>
+					<li th:each="c : ${roomCategories}">
+						<input th:field="*{roomCategory.category}" type="radio" th:value="${c.category}"
+							th:text="${c.category}" />
+						<label> ID: </label>
+						<label th:text="${c.roomCategoryId}"></label>
+						<label> Price: </label>
+						<label th:text="${c.price}"></label>
+						<label> Max. People: </label>
+						<label th:text="${c.maxPeople}"></label>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div>
+			<button type="submit">Save</button>
+		</div>
+	</form>
+</body>
+
+</html>

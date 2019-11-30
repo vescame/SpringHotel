@@ -28,6 +28,9 @@ public class UserService {
 
 	public void add(UserEntity userEntity) throws ExceptionHandler {
 		if (!this.hasErrors(userEntity)) {
+			if (this.userRepository.findById(userEntity.getUserCpf()).isPresent()) {
+				throw new ExceptionHandler("User with CPF [" + userEntity.getUserCpf() + "] already exists");
+			}
 			this.userRepository.save(userEntity);
 		}
 	}
@@ -38,11 +41,8 @@ public class UserService {
 		}
 	}
 
-	public UserEntity findById(String userCpf) throws ExceptionHandler {
-		if (userCpf.length() != 11) {
-			throw new ExceptionHandler("Invalid CPF");
-		}
-		Optional<UserEntity> u = this.userRepository.findById(userCpf);
+	public UserEntity findByCpf(String cpf) throws ExceptionHandler {
+		Optional<UserEntity> u = this.userRepository.findById(cpf);
 		if (!u.isPresent()) {
 			throw new ExceptionHandler("User not found!");
 		}
@@ -50,9 +50,6 @@ public class UserService {
 	}
 
 	public void delete(String userCpf) throws ExceptionHandler {
-		if (userCpf.length() != 11) {
-			throw new ExceptionHandler("Invalid CPF");
-		}
 		try {
 			this.userRepository.deleteById(userCpf);
 		} catch (EmptyResultDataAccessException e) {
@@ -72,6 +69,10 @@ public class UserService {
 		boolean result = true;
 		List<String> errorFields = new ArrayList<String>();
 
+		if (!u.getUserCpf().matches("[0-9]+")) {
+			throw new ExceptionHandler("Invalid CPF");
+		}
+		
 		if (u.getUserCpf().length() != 11) {
 			errorFields.add("CPF");
 		}

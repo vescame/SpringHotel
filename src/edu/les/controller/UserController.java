@@ -18,19 +18,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.les.entity.UserEntity;
 import edu.les.entity.UserReportViewModel;
 import edu.les.exception.ExceptionHandler;
-import edu.les.lab.dao.UserDAO;
+import edu.les.security.SpringHotelSession;
 import edu.les.service.UserService;
 
 @Controller
 public class UserController {
 	@Autowired
 	private UserService userService;
-
-	private final String userObj = "userEntity";
-	private final String userObjForUpdate = "userEntityForUpdate";
-	private final String userObjList = "userEntityList";
-	private final String oldPasswdParam = "OLD_PASSWORD";
-	private final String statusMessage = "STATUS_MESSAGE";
 
 	public List<String> roleList() {
 		List<String> roles = new ArrayList<>();
@@ -40,105 +34,121 @@ public class UserController {
 		return roles;
 	}
 
-	@GetMapping(value = "user/user-add")
+	@GetMapping(value = "/user/user-add")
 	public ModelAndView add(Model model) {
-		ModelAndView modelAndView = new ModelAndView("user/user-add");
-		if (!model.containsAttribute(this.userObj)) {
-			modelAndView.addObject(this.userObj, new UserEntity());
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
 		}
+		ModelAndView modelAndView = new ModelAndView("/user/user-add");
+		if (!model.containsAttribute("userEntity")) {
+			modelAndView.addObject("userEntity", new UserEntity());
+		}
+		modelAndView.addObject("rolesList", this.roleList());
 		return modelAndView;
 	}
 
-	@PostMapping(value = "user/user-add")
-	public ModelAndView add(@ModelAttribute(userObj) UserEntity userEntity, RedirectAttributes redirectAttributes) {
+	@PostMapping(value = "/user/user-add")
+	public ModelAndView add(@ModelAttribute("userEntity") UserEntity userEntity,
+			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-add");
 		try {
-			new UserDAO().insert(userEntity);
-			redirectAttributes.addFlashAttribute(this.statusMessage, "User created successfully!");
+			this.userService.add(userEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User successfully created!");
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, "Failed to create user!" + e.getMessage());
-			redirectAttributes.addFlashAttribute(this.userObj, userEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Failed to create user!" + e.getMessage());
+			redirectAttributes.addFlashAttribute("userEntity", userEntity);
 		}
 		return modelAndView;
 	}
 
-	@GetMapping(value = "user/user-search")
+	@GetMapping(value = "/user/user-search")
 	public ModelAndView search(Model model) {
-		ModelAndView modelAndView = new ModelAndView("user/user-search");
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/user/user-search");
 		Iterable<UserEntity> userEntityList = this.userService.fetchAll();
-		modelAndView.addObject(this.userObjList, userEntityList);
+		modelAndView.addObject("userEntityList", userEntityList);
 		return modelAndView;
 	}
 
-	@PostMapping(value = "user/user-search")
-	public ModelAndView search(@RequestParam("userCpf") String userCpf, RedirectAttributes redirectAttributes) {
+	@PostMapping(value = "/user/user-search")
+	public ModelAndView search(@RequestParam("userCpf") Optional<String> userCpf,
+			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
-			UserEntity u = new UserDAO().select(userCpf);
-			redirectAttributes.addFlashAttribute(this.userObj, u);
+			if (userCpf.isPresent()) {
+				UserEntity userEntity = this.userService.findByCpf(userCpf.get());
+				redirectAttributes.addFlashAttribute("userEntity", userEntity);
+			}
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
 		}
 		return modelAndView;
 	}
 
-	@GetMapping(value = "user/user-search/{id}")
-	public ModelAndView inactivateUser(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirAttr) {
-		try {
-			if (cpf.isPresent()) {
-				UserReportViewModel report = new UserDAO().report(cpf.get());
-				redirAttr.addFlashAttribute("report", report);
-			}
-		} catch (ExceptionHandler e) {
-			redirAttr.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
-		}
-		return new ModelAndView("redirect:/user/user-report");
-	}
-
-	@GetMapping(value = "user/user-delete/{id}")
-	public ModelAndView delete(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
-		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
-		try {
-			if (cpf.isPresent()) {
-				new UserDAO().delete(cpf.get());
-				redirectAttributes.addFlashAttribute(this.statusMessage, "User deleted!");
-			}
-		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
-		}
-		return modelAndView;
-	}
-
-	@GetMapping(value = "user/user-update/{id}")
+	@GetMapping(value = "/user/user-update/{id}")
 	public ModelAndView update(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
 		ModelAndView modelAndView = new ModelAndView("/user/user-update");
 		try {
 			if (cpf.isPresent()) {
-				UserEntity user = this.userService.findById(cpf.get());
-				modelAndView.addObject(this.oldPasswdParam, user.getPassword());
-				modelAndView.addObject(this.userObjForUpdate, user);
+				UserEntity userEntity = this.userService.findByCpf(cpf.get());
+				modelAndView.addObject("userEntity", userEntity);
+				modelAndView.addObject("OLD_PASSWORD", userEntity.getPassword());
 				modelAndView.addObject("rolesList", this.roleList());
 			}
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
+			redirectAttributes.addAttribute("STATUS_MESSAGE", e.getMessage());
+			return new ModelAndView("redirect:/user/user-search");
 		}
 		return modelAndView;
 	}
 
-	@PostMapping(value = "user/user-update")
-	public ModelAndView update(@ModelAttribute(userObjForUpdate) UserEntity userEntityUpdated,
-			@RequestParam(oldPasswdParam) String oldPassword, RedirectAttributes redirectAttributes) {
-		try {
-			// if old user didn't specified a password,
-			// we assume he doesn't want to update it, so still the same
-			if (userEntityUpdated.getPassword().length() == 0) {
-				userEntityUpdated.setPassword(oldPassword);
-			}
-			new UserDAO().update(userEntityUpdated);
-			redirectAttributes.addFlashAttribute(this.statusMessage, "User Updated!");
-		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
+	@PostMapping(value = "/user/user-update")
+	public ModelAndView update(@ModelAttribute("userEntity") UserEntity userEntity,
+			@RequestParam("OLD_PASSWORD") Optional<String> password, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
 		}
-		return new ModelAndView("redirect:/user/user-search");
+		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
+		try {
+			if (userEntity.getPassword().isEmpty()) {
+				if (password.isPresent()) {
+					userEntity.setPassword(password.get());
+				}
+			}
+			this.userService.update(userEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User Updated!");
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+			redirectAttributes.addFlashAttribute("userEntity", userEntity);
+			return new ModelAndView("redirect:/user/user-update/" + userEntity.getUserCpf());
+		}
+		return modelAndView;
+	}
+
+	@GetMapping(value = "/user/user-delete/{id}")
+	public ModelAndView delete(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
+		try {
+			if (cpf.isPresent()) {
+				this.userService.delete(cpf.get());
+			}
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+		}
+		return modelAndView;
 	}
 }

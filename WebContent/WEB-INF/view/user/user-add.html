@@ -4,66 +4,7 @@
 	<meta charset="ISO-8859-1">
 	<title>User Add</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function () {
-
-			function limpa_formulario_cep() {
-				// Limpa valores do formulario de cep.
-				$("#txtStreet").val("");
-				$("#txtDistrict").val("");
-				$("#txtCity").val("");
-				$("#txtFederalUnit").val("");
-			}
-
-			//Quando o campo cep perde o foco.
-			$("#txtZip").blur(function () {
-
-				//Nova variavel "cep" somente com digitos.
-				var cep = $(this).val().replace(/\D/g, '');
-
-				//Verifica se campo cep possui valor informado.
-				if (cep != "") {
-
-					//Expressao regular para validar o CEP.
-					var validacep = /^[0-9]{8}$/;
-
-					//Valida o formato do CEP.
-					if (validacep.test(cep)) {
-
-						//Preenche os campos com "..." enquanto consulta webservice.
-						$("#txtStreet").val("...");
-						$("#txtDistrict").val("...");
-						$("#txtCity").val("...");
-						$("#txtFederalUnit").val("...");
-
-						//Consulta o webservice viacep.com.br/
-						$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
-
-							if (!("erro" in dados)) {
-								//Atualiza os campos com os valores da consulta.
-								$("#txtStreet").val(dados.logradouro);
-								$("#txtDistrict").val(dados.bairro);
-								$("#txtCity").val(dados.localidade);
-								$("#txtFederalUnit").val(dados.uf);
-							}
-							else {
-								//CEP pesquisado nao foi encontrado.
-								limpa_formulario_cep();
-								alert("CEP nao encontrado.");
-							}
-						});
-					} else {
-						//cep invalido.
-						limpa_formulario_cep();
-						alert("Formato de CEP invalido.");
-					}
-				} else {
-					//cep sem valor, limpa formulrio.
-					limpa_formulario_cep();
-				}
-			});
-		});
-	</script>
+	<script type="text/javascript" src="../resources/jquery/zipcode_api.js"></script>
 </head>
 
 <body>
@@ -87,14 +28,20 @@
 		<div>
 			<div>
 				<label>CPF</label>
-				<input th:field="*{userCpf}" maxlength="11" type="text" id="inputCpf" placeholder="CPF">
+				<input th:field="*{userCpf}" maxlength="11" type="text" placeholder="CPF">
 			</div>
 		</div>
 		<div>
 			<div>
 				<label>Name</label>
-				<input th:field="*{username}" maxlength="35" type="text" id="txtUsername" placeholder="Name">
+				<input th:field="*{username}" maxlength="35" type="text" placeholder="Name">
 			</div>
+		</div>
+		<div>
+			<label>Role</label>
+			<select th:field="*{userRole}" name="role" id="txtRole">
+				<option th:each="c : ${rolesList}" th:value="${c}" th:text="${c}" />
+			</select>
 		</div>
 		<div>
 			<div>
@@ -132,7 +79,7 @@
 		<div>
 			<div>
 				<label>House Number</label>
-				<input th:field="*{houseNumber}" type="text" id="txtHouseNumber" placeholder="ex.: 443">
+				<input th:field="*{houseNumber}" type="text" placeholder="ex.: 443">
 			</div>
 			<div>
 				<label>Telephone</label>
@@ -144,7 +91,7 @@
 			</div>
 			<div>
 				<label>Birthday</label>
-				<input th:field="*{dateOfBirth}" type="date" value="1990-01-01" id="txtDate">
+				<input th:field="*{dateOfBirth}" type="date" value="1990-01-01">
 			</div>
 		</div>
 		<div>

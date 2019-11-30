@@ -1,15 +1,11 @@
 package edu.les.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,33 +17,27 @@ import edu.les.service.UserService;
 @Controller
 public class ProfileController {
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
-	private final String viewUrl = "/profile";
-	private final String statusKey = "PROFILE_STATUS";
-
-	@RequestMapping(value = viewUrl, method = RequestMethod.GET)
+	@GetMapping(value = "/profile")
 	public ModelAndView loginView(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.viewUrl);
 		UserEntity user = SpringHotelSession.getLoggedInUser();
-		if (user != null) {
-			modelAndView.addObject("userEntity", user);
-		} else {
-			throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+		if (user == null) {
+			return new ModelAndView("redirect:/login");
 		}
-		return modelAndView;
+		return new ModelAndView("/profile").addObject("userEntity", user);
 	}
 
-	@RequestMapping(value = viewUrl, params = "save", method = RequestMethod.POST)
-	public ModelAndView loginView(@ModelAttribute() UserEntity userEntity, HttpServletRequest request,
-			RedirectAttributes redir) {
+	@PostMapping(value = "/profile")
+	public ModelAndView loginView(@ModelAttribute("userEntity") UserEntity userEntity, RedirectAttributes redirectAttributes) {
 		try {
+			System.out.println(userEntity.getUserRole());
 			this.userService.update(userEntity);
-			redir.addFlashAttribute(this.statusKey,
-					"Your profile have been updated, logout and login to apply changes to the system.");
+			redirectAttributes.addFlashAttribute("PROFILE_STATUS", "Your profile have been updated!");
+			SpringHotelSession.loginUser(this.userService.findByCpf(userEntity.getUserCpf()));
 		} catch (ExceptionHandler e) {
-			redir.addFlashAttribute(statusKey, e.getMessage());
+			redirectAttributes.addFlashAttribute("PROFILE_STATUS", e.getMessage());
 		}
-		return new ModelAndView("redirect:" + this.viewUrl);
+		return new ModelAndView("redirect:/profile");
 	}
 }

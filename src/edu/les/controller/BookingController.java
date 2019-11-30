@@ -1,10 +1,13 @@
 package edu.les.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.BookingEntity;
 import edu.les.entity.RoomEntity;
+import edu.les.entity.UserEntity;
 import edu.les.exception.ExceptionHandler;
 import edu.les.security.SpringHotelSession;
 import edu.les.service.BookingService;
@@ -25,101 +29,122 @@ public class BookingController {
 	@Autowired
 	private RoomService roomService;
 
-	private final String viewPrefix = "/booking";
-	private final String bookingAddUrl = viewPrefix + "/booking-add";
-	private final String bookingSearchUrl = viewPrefix + "/booking-search";
-	private final String bookingCheckoutUrl = viewPrefix + "/booking-checkout";
-	private final String bookingObj = "bookingEntity";
-	private final String bookingListObj = "bookingEntityList";
-	private final String loggedUserCpf = "userCpf";
-	private final String loggedUserName = "userName";
-	private final String roomListObj = "roomList";
-	private final String statusMessage = "STATUS_MESSAGE";
-
 	private Iterable<RoomEntity> disponibleRooms() throws ExceptionHandler {
 		return this.roomService.fetchDisponible();
 	}
-
-	@GetMapping(value = bookingAddUrl)
-	public ModelAndView bookingView(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.bookingAddUrl);
-		if (!model.containsAttribute(this.bookingObj)) {
-			modelAndView.addObject(bookingObj, new BookingEntity());
-		}
-		if (model.containsAttribute(this.statusMessage)) {
-			modelAndView.addObject(this.statusMessage, model.asMap().get(this.statusMessage));
-		}
-		try {
-			modelAndView.addObject(this.roomListObj, this.disponibleRooms());
-		} catch (ExceptionHandler e) {
-			modelAndView.addObject(this.statusMessage, e.getMessage());
-		}
-		modelAndView.addObject(this.loggedUserCpf, SpringHotelSession.getLoggedInUser().getUserCpf());
-		modelAndView.addObject(this.loggedUserName, SpringHotelSession.getLoggedInUser().getUsername());
-		return modelAndView;
+	
+	private boolean isLogged() {
+		return SpringHotelSession.getLoggedInUser() != null;
+	}
+	
+	private boolean isAdmin() {
+		return SpringHotelSession.isAdmin();
 	}
 
-	@PostMapping(value = bookingAddUrl)
-	public ModelAndView bookingRegister(@ModelAttribute(bookingObj) BookingEntity bookingEntity,
+	@GetMapping(value = "/booking/booking-add")
+	public ModelAndView bookingView(Model model, RedirectAttributes redirectAttributes) {
+		if (!this.isLogged()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/booking/booking-add");
+		try {
+			String cpf = SpringHotelSession.getLoggedInUser().getUserCpf();
+			if (!this.isAdmin()){
+				if (this.bookingService.hasActiveBooking(cpf)) {
+					redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "You already have an active booking!");
+					return new ModelAndView("redirect:/home");
+				}
+ 				modelAndView.addObject("IS_ADMIN", false);
+			} else {
+				modelAndView.addObject("IS_ADMIN", true);
+			}
+			modelAndView.addObject("roomList", this.disponibleRooms());
+			modelAndView.addObject("bookingEntity", this.userBooking(cpf));
+		} catch (ExceptionHandler e) {
+			modelAndView.addObject("STATUS_MESSAGE", e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	private BookingEntity userBooking(String cpf) {
+		BookingEntity booking = new BookingEntity();
+		UserEntity userEntity = new UserEntity();
+		userEntity.setUserCpf(cpf);
+		booking.setUserEntity(userEntity);
+		return booking;
+	}
+
+	@PostMapping(value = "/booking/booking-add")
+	public ModelAndView bookingRegister(@ModelAttribute("bookingEntity") BookingEntity bookingEntity,
 			RedirectAttributes redirectAttributes) {
-		ModelAndView modelAndView = new ModelAndView("redirect:" + this.bookingAddUrl);
+		if (!this.isLogged()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("redirect:/booking/booking-add");
 		try {
 			this.bookingService.add(bookingEntity);
-			redirectAttributes.addFlashAttribute(this.statusMessage, "Booking Successfully Completed!");
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User Successfully Booked!");
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, "Failed to book room: " + e.getMessage());
-			redirectAttributes.addFlashAttribute(this.bookingObj, bookingEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Failed to book room: " + e.getMessage());
+			redirectAttributes.addFlashAttribute("bookingEntity", bookingEntity);
 		}
 		return modelAndView;
 	}
 
-	@GetMapping(value = bookingSearchUrl)
+	@GetMapping(value = "/booking/booking-search")
 	public ModelAndView search(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.bookingSearchUrl);
-		if (!model.containsAttribute(this.bookingListObj)) {
-			Iterable<BookingEntity> list = this.bookingService.fetchAll();
-			modelAndView.addObject(this.bookingListObj, list);
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/booking/booking-search");
+		Iterable<BookingEntity> list = this.bookingService.fetchAll();
+		modelAndView.addObject("bookingEntityList", list);
+		return modelAndView;
+	}
+
+	@PostMapping(value = "/booking/booking-search")
+	public ModelAndView search(@RequestParam("userCpf") Optional<String> cpf, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/booking/booking-search");
+		if (cpf.isPresent()) {
+			Iterable<BookingEntity> list = this.bookingService.fetchByCpf(cpf.get());
+			modelAndView.addObject("bookingEntityList", list);
 		}
 		return modelAndView;
 	}
 
-	@PostMapping(value = bookingSearchUrl)
-	public ModelAndView search(@RequestParam("userCpf") String userCpf, RedirectAttributes redirectAttributes) {
-		ModelAndView modelAndView = new ModelAndView("redirect:" + this.bookingSearchUrl);
-		Iterable<BookingEntity> list = this.bookingService.fetchByCpf(userCpf);
-		modelAndView.addObject(this.bookingListObj, list);
-		return modelAndView;
-	}
-
-	@GetMapping(value = bookingCheckoutUrl)
-	public ModelAndView checkout(Model model) {
-		ModelAndView modelAndView = new ModelAndView(this.bookingCheckoutUrl);
-		if (SpringHotelSession.getLoggedInUser().getUserRole().equals("ADMINISTRATOR")) {
-			modelAndView.addObject("IS_ADMIN", true);
-		} else {
-			final String userCpf = SpringHotelSession.getLoggedInUser().getUserCpf();
-			modelAndView.addObject("cpf", userCpf);
-			BookingEntity booking;
-			try {
-				booking = this.bookingService.fetchActiveBookingByCpf(userCpf);
-				modelAndView.addObject(this.bookingObj, booking);
-			} catch (ExceptionHandler e) {
-				modelAndView.addObject(this.statusMessage, e.getMessage());
-			}
+	@GetMapping(value = "/booking/booking-checkout/{id}")
+	public ModelAndView checkout(@PathVariable("id") Optional<Integer> bookingId) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
 		}
-		return modelAndView;
-	}
-
-	@PostMapping(value = bookingCheckoutUrl)
-	public ModelAndView checkout(@RequestParam("bookingId") String bookingId,
-			RedirectAttributes redirectAttributes) {
+		ModelAndView modelAndView = new ModelAndView("/booking/booking-checkout");
 		try {
-			this.bookingService.checkOut(Integer.parseInt(bookingId));
-			redirectAttributes.addFlashAttribute(this.statusMessage, "Successfully Checked Out!");
+			if (bookingId.isPresent()) {
+				BookingEntity booking = this.bookingService.fetchById(bookingId.get());
+				modelAndView.addObject("bookingEntity", booking);
+			}
 		} catch (ExceptionHandler e) {
-			redirectAttributes.addFlashAttribute(this.statusMessage, e.getMessage());
+			modelAndView.addObject("STATUS_MESSAGE", e.getMessage());
 		}
-		return new ModelAndView("redirect:" + this.bookingCheckoutUrl);
+		return modelAndView;
+	}
+
+	@PostMapping(value = "/booking/booking-checkout")
+	public ModelAndView checkout(@ModelAttribute("bookingEntity") BookingEntity bookingEntity,
+			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		try {
+			this.bookingService.checkOut(bookingEntity.getBookingId());
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Successfully Checked Out!");
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+		}
+		return new ModelAndView("redirect:/booking/booking-search");
 	}
 
 }

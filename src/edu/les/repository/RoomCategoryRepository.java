@@ -11,6 +11,6 @@ import edu.les.entity.RoomCategoryEntity;
 
 @Repository
 public interface RoomCategoryRepository extends CrudRepository<RoomCategoryEntity, Integer> {
-	@Query("FROM room_category where category = :v_category")
+	@Query("FROM room_category where upper(category) = upper(:v_category)")
 	public Optional<RoomCategoryEntity> fetchByCategory(@Param("v_category") String category);
 }

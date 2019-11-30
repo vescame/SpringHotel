@@ -19,6 +19,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -30,19 +31,19 @@ import org.thymeleaf.templatemode.TemplateMode;
 @EnableWebMvc
 @ComponentScan("edu.les")
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"edu.les.repository"})
+@EnableJpaRepositories(basePackages = { "edu.les.repository" })
 public class Config implements WebMvcConfigurer {
 	@Autowired
 	private ApplicationContext applicationContext;
 
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
-		SpringResourceTemplateResolver templateResolver =
-				new SpringResourceTemplateResolver();
+		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/view/");
 		templateResolver.setSuffix(".html");
 		templateResolver.setTemplateMode(TemplateMode.HTML);
+		templateResolver.setCharacterEncoding("utf-8");
 		templateResolver.setCacheable(true);
 
 		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
@@ -57,20 +58,20 @@ public class Config implements WebMvcConfigurer {
 
 	@Bean
 	public DataSource dataSource() {
-	try {
+		try {
 			DriverManagerDataSource dataSource = new DriverManagerDataSource();
 			dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			dataSource.setUsername("hotel");
 			dataSource.setPassword("mysqldb8");
 			dataSource.setUrl(
-				"jdbc:mysql://localhost:3306/hoteldb?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC"); 
+					"jdbc:mysql://localhost:3306/hoteldb?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC");
 			return dataSource;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	@Bean
 	public JpaVendorAdapter jpaVendorAdapter() {
 		return new HibernateJpaVendorAdapter();
@@ -79,8 +80,7 @@ public class Config implements WebMvcConfigurer {
 	@Bean
 	public Properties hibernateProperties() {
 		Properties hibernateProp = new Properties();
-		hibernateProp.put("hibernate.dialect", 
-			"org.hibernate.dialect.MySQL8Dialect");
+		hibernateProp.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 		hibernateProp.put("hibernate.hbm2ddl.auto", "update");
 		hibernateProp.put("hibernate.format_sql", false);
 		hibernateProp.put("hibernate.use_sql_comments", true);
@@ -90,11 +90,10 @@ public class Config implements WebMvcConfigurer {
 		hibernateProp.put("hibernate.jdbc.fetch_size", 50);
 		return hibernateProp;
 	}
-	
+
 	@Bean
 	public EntityManagerFactory entityManagerFactory() {
-		LocalContainerEntityManagerFactoryBean factoryBean =
-			new LocalContainerEntityManagerFactoryBean();
+		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setPackagesToScan("edu.les.entity");
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setJpaProperties(hibernateProperties());
@@ -107,4 +106,11 @@ public class Config implements WebMvcConfigurer {
 	public PlatformTransactionManager transactionManager() {
 		return new JpaTransactionManager(entityManagerFactory());
 	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//		WebMvcConfigurer.super.addResourceHandlers(registry);
+		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+	}
+
 }

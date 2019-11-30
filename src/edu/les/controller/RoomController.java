@@ -1,20 +1,21 @@
 package edu.les.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.RoomCategoryEntity;
 import edu.les.entity.RoomEntity;
 import edu.les.exception.ExceptionHandler;
+import edu.les.security.SpringHotelSession;
 import edu.les.service.RoomCategoryService;
 import edu.les.service.RoomService;
 
@@ -26,40 +27,94 @@ public class RoomController {
 	@Autowired
 	private RoomCategoryService roomCategoryService;
 
-	private final String viewUrl = "/room";
-	private final String viewObjectName = "roomEntity";
-	private final String viewObjectListName = "roomList";
-	private final String statusKey = "STATUS_MESSAGE";
-	private final String successfulStatusValue = "Success!";
+	@GetMapping(value = { "/room", "/room/room-add" })
+	public ModelAndView add(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/room/room-add");
+		this.injectCategoryList(modelAndView);
+		modelAndView.addObject(new RoomEntity());
+		return modelAndView;
+	}
 
-	@RequestMapping(value = viewUrl, method = RequestMethod.GET)
-	public ModelAndView roomTypeView(Model model) {
-		ModelAndView modelAndView = new ModelAndView(viewUrl);
+	private void injectCategoryList(ModelAndView m) {
 		Iterable<RoomCategoryEntity> roomCategoryList = this.roomCategoryService.fetchAll();
-		Iterable<RoomEntity> roomList = this.roomService.fetchAll();
-		modelAndView.addObject(viewObjectListName, roomList);
-		modelAndView.addObject("categorias", roomCategoryList);
-		if (!model.containsAttribute(this.viewObjectName)) {
-			modelAndView.addObject(viewObjectName, new RoomEntity());
+		m.addObject("roomCategories", roomCategoryList);
+	}
+
+	@PostMapping(value = "/room/room-add")
+	public ModelAndView add(@ModelAttribute RoomEntity roomEntity, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		try {
+			this.roomService.addOrUpdate(roomEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Room created!");
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+		}
+		return new ModelAndView("redirect:/room/room-add");
+	}
+
+	@GetMapping(value = "/room/room-search")
+	public ModelAndView search(Model model) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/room/room-search");
+		modelAndView.addObject("roomEntityList", this.roomService.fetchAll());
+		return modelAndView;
+	}
+
+	@GetMapping(value = "/room/room-update/{id}")
+	public ModelAndView update(@PathVariable("id") Optional<Integer> roomId, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("/room/room-update");
+		try {
+			if (roomId.isPresent()) {
+				RoomEntity room = this.roomService.findById(roomId.get());
+				modelAndView.addObject("roomEntity", room);
+				this.injectCategoryList(modelAndView);
+			}
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+			return new ModelAndView("redirect:/room/room-search");
 		}
 		return modelAndView;
 	}
 
-	@RequestMapping(value = viewUrl, params = "save", method = RequestMethod.POST)
-	public ModelAndView roomTypeSave(@ModelAttribute(viewObjectName) RoomEntity roomEntity, HttpServletRequest request,
-			RedirectAttributes redir) {
-		try {
-			this.roomService.add(roomEntity);
-			redir.addFlashAttribute(statusKey, this.successfulStatusValue);
-		} catch (ExceptionHandler e) {
-			redir.addFlashAttribute(statusKey, e.getMessage());
+	@PostMapping(value = "/room/room-update")
+	public ModelAndView update(@ModelAttribute("roomEntity") RoomEntity roomEntity,
+			RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
 		}
-		return new ModelAndView("redirect:" + this.viewUrl);
+		ModelAndView modelAndView = new ModelAndView("redirect:/room/room-search");
+		try {
+			this.roomService.addOrUpdate(roomEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "Room updated!");
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+		}
+		return modelAndView;
 	}
 
-	@RequestMapping(value = viewUrl, params = "delete", method = RequestMethod.POST)
-	public ModelAndView roomTypeDelete(@PathVariable int roomId, HttpServletRequest request, RedirectAttributes redir) {
-		System.out.println("deleted: " + roomId);
-		return new ModelAndView("redirect:" + this.viewUrl);
+	@GetMapping(value = "/room/room-delete/{id}")
+	public ModelAndView delete(@PathVariable("id") Optional<Integer> roomId, RedirectAttributes redirectAttributes) {
+		if (!SpringHotelSession.isAdmin()) {
+			return new ModelAndView("redirect:/login");
+		}
+		ModelAndView modelAndView = new ModelAndView("redirect:/room/room-search");
+		try {
+			if (roomId.isPresent()) {
+				this.roomService.deleteByID(roomId.get());
+			}
+		} catch (ExceptionHandler e) {
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
+		}
+		return modelAndView;
 	}
 }
