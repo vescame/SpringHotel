@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.les.entity.UserEntity;
+import edu.les.entity.UserReportViewModel;
 import edu.les.exception.ExceptionHandler;
 import edu.les.lab.dao.UserDAO;
 import edu.les.service.UserService;
@@ -85,13 +86,13 @@ public class UserController {
 	public ModelAndView inactivateUser(@PathVariable("id") Optional<String> cpf, RedirectAttributes redirAttr) {
 		try {
 			if (cpf.isPresent()) {
-				new UserDAO().inactivateUser(cpf.get());
-				redirAttr.addFlashAttribute("STATUS_MESSAGE", "User with CPF:" + cpf.get() + " is now inactive!");
+				UserReportViewModel report = new UserDAO().report(cpf.get());
+				redirAttr.addFlashAttribute("report", report);
 			}
 		} catch (ExceptionHandler e) {
 			redirAttr.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
 		}
-		return new ModelAndView("redirect:/user/user-search");
+		return new ModelAndView("redirect:/user/user-report");
 	}
 
 	@GetMapping(value = "user/user-delete/{id}")

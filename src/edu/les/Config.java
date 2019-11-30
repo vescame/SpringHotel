@@ -80,7 +80,7 @@ public class Config implements WebMvcConfigurer {
 	public Properties hibernateProperties() {
 		Properties hibernateProp = new Properties();
 		hibernateProp.put("hibernate.dialect", 
-			"org.hibernate.dialect.MariaDB53Dialect");
+			"org.hibernate.dialect.MySQL8Dialect");
 		hibernateProp.put("hibernate.hbm2ddl.auto", "update");
 		hibernateProp.put("hibernate.format_sql", false);
 		hibernateProp.put("hibernate.use_sql_comments", true);

@@ -12,6 +12,7 @@ import java.util.Date;
 import org.springframework.stereotype.Service;
 
 import edu.les.entity.UserEntity;
+import edu.les.entity.UserReportViewModel;
 import edu.les.exception.ExceptionHandler;
 
 @Service
@@ -22,8 +23,7 @@ public class UserDAO {
 			addressDAO.insert(userEntity.getAddressEntity());
 			try {
 				Connection con = ResourceMan.getInstance().getConnection();
-				PreparedStatement pstmt = con.prepareStatement(
-						"insert into hotel_user(user_cpf, celphone_number,"
+				PreparedStatement pstmt = con.prepareStatement("insert into hotel_user(user_cpf, celphone_number,"
 						+ " date_of_birth, email, house_number, password,"
 						+ " status, telephone_number, user_role, user_name,"
 						+ "zip_code) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -75,7 +75,7 @@ public class UserDAO {
 		}
 		return u;
 	}
-	
+
 	public UserEntity update(UserEntity userEntity) throws ExceptionHandler {
 		if (!UserValidation.hasErrors(userEntity)) {
 			try {
@@ -87,16 +87,9 @@ public class UserDAO {
 			try {
 				Connection con = ResourceMan.getInstance().getConnection();
 				PreparedStatement pstmt = con
-						.prepareStatement("update hotel_user set "
-								+ "celphone_number = ?,"
-								+ "date_of_birth = ?,"
-								+ "email = ?,"
-								+ "house_number = ?,"
-								+ "password = ?,"
-								+ "telephone_number = ?,"
-								+ "user_role = ?,"
-								+ "user_name = ?,"
-								+ "zip_code = ? where user_cpf = ?");
+						.prepareStatement("update hotel_user set " + "celphone_number = ?," + "date_of_birth = ?,"
+								+ "email = ?," + "house_number = ?," + "password = ?," + "telephone_number = ?,"
+								+ "user_role = ?," + "user_name = ?," + "zip_code = ? where user_cpf = ?");
 				pstmt.setString(1, userEntity.getCelphoneNumber());
 				Date b = this.formatDate(userEntity.getDateOfBirth());
 				pstmt.setDate(2, new java.sql.Date(b.getTime()));
@@ -116,7 +109,7 @@ public class UserDAO {
 		}
 		return userEntity;
 	}
-	
+
 	public void delete(String cpf) throws ExceptionHandler {
 		try {
 			if (cpf == null) {
@@ -143,7 +136,27 @@ public class UserDAO {
 			throw new ExceptionHandler("There\'s no user with CPF: " + cpf);
 		}
 	}
-	
+
+	public UserReportViewModel report(String cpf) throws ExceptionHandler {
+		UserReportViewModel report = new UserReportViewModel();
+		try {
+			Connection con = ResourceMan.getInstance().getConnection();
+			PreparedStatement pstmt = con.prepareCall("{CALL userReport(?)}");
+			pstmt.setString(1, cpf);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.first()) {
+				report.setUserCpf(rs.getString("user_cpf"));
+				report.setUserName(rs.getString("user_name"));
+				report.setNumOfBookings(rs.getInt("num_of_bookings"));
+				report.setTotalValue(rs.getFloat("total_value"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionHandler("There\'s no user with CPF: " + cpf);
+		}
+		return report;
+	}
+
 	private Date formatDate(Date d) {
 		DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String nascString = sdf.format(d);
