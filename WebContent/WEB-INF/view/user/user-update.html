@@ -4,7 +4,7 @@
 	<meta charset="ISO-8859-1">
 	<title>User Update</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script type="text/javascript" src="../resources/jquery/zipcode_api.js"></script>
+	<script type="text/javascript" th:src="@{/resources/jquery/zipcode_api.js}"></script>
 </head>
 
 <body>
@@ -103,7 +103,7 @@
 				<input th:field="*{email}" maxlength="35" type="email" id="inputEmail4" placeholder="Email">
 			</div>
 			<div>
-				<label>New Password (if empty, password still the same)</label>
+				<label>New Password</label>
 				<input th:field="*{password}" maxlength="35" type="password" placeholder="Strong password">
 			</div>
 		</div>

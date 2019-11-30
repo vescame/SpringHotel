@@ -120,11 +120,13 @@ public class UserController {
 		}
 		ModelAndView modelAndView = new ModelAndView("redirect:/user/user-search");
 		try {
-			if (userEntity.getPassword().isEmpty() && password.isPresent()) {
-				userEntity.setPassword(password.get());
-				this.userService.update(userEntity);
-				redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User Updated!");
+			if (userEntity.getPassword().isEmpty()) {
+				if (password.isPresent()) {
+					userEntity.setPassword(password.get());
+				}
 			}
+			this.userService.update(userEntity);
+			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", "User Updated!");
 		} catch (ExceptionHandler e) {
 			redirectAttributes.addFlashAttribute("STATUS_MESSAGE", e.getMessage());
 			redirectAttributes.addFlashAttribute("userEntity", userEntity);

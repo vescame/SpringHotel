@@ -26,6 +26,16 @@ public class BookingEntity {
 	private Date checkOut;
 	private float finalAmout;
 	private String status = "A";
+	private String observacao;
+	
+	@Column(name = "observacao", nullable = true)
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
 
 	public BookingEntity() {
 		this.checkIn = new Date();
