@@ -1,0 +1,43 @@
+<?xml version="1.0" ?> 
+<project name="SpringHotel" default="war">
+	<property name="src_dir" value="src"/>
+	<property name="libs_dir" value="lib"/>
+	<property name="build_dir" value="build"/>
+	<property name="classes_dir" value="${build_dir}/classes"/>
+	<property name="dist_dir" value="dist"/>
+	<property name="dist_file" value="${dist_dir}/SpringHotel.war"/>
+
+		<!-- for pt BR, UTF-8 doesn't work -->
+	<property name="encoding" value="iso-8859-1"/>
+
+	<path id="compile.classpath">
+		<fileset dir="WebContent/WEB-INF/${libs_dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${classes_dir}"/>
+		<mkdir dir="${dist_dir}" />
+	</target>
+
+	<target name="compile" depends="init" >
+		<javac encoding="${encoding}" destdir="${classes_dir}" debug="true" srcdir="${src_dir}">
+			<classpath refid="compile.classpath"/>
+		</javac>
+	</target>
+
+	<target name="war" depends="compile">
+		<war needxmlfile="false" destfile="${dist_file}">
+			<fileset dir="WebContent"/>
+			<lib dir="WebContent/WEB-INF/${libs_dir}"/>
+			<classes dir="${classes_dir}"/>
+		</war>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist_dir}" />
+		<delete dir="${build_dir}" />
+	</target>
+
+</project>
