@@ -36,23 +36,23 @@ public class LoginService {
 	
 	private UserEntity defaultAdminUser() {
 		AddressEntity address = new AddressEntity();
-        address.setZipCode("01001000");
-        address.setStreet("Praça da Sé");
-        address.setDistrict("Sé");
-        address.setCity("São Paulo");
-        address.setFederalUnit("SP");
+		address.setZipCode("01001000");
+		address.setStreet("Praça da Sé");
+		address.setDistrict("Sé");
+		address.setCity("São Paulo");
+		address.setFederalUnit("SP");
 
-        UserEntity admin = new UserEntity();
-        admin.setUserCpf("00000000000");
-        admin.setUsername("Administrator");
-        admin.setUserRole("ADMINISTRATOR");
-        admin.setHouseNumber(1);
-        admin.setDateOfBirth(new Date());
-        admin.setStatus(new StringBuilder("A").charAt(0));
-        admin.setEmail("admin@spring.hotel");
-        admin.setPassword("#springhotel");
-        admin.setAddressEntity(address);
-        
-        return admin;
+		UserEntity admin = new UserEntity();
+		admin.setUserCpf("00000000000");
+		admin.setUsername("Administrator");
+		admin.setUserRole("ADMINISTRATOR");
+		admin.setHouseNumber(1);
+		admin.setDateOfBirth(new Date());
+		admin.setStatus(new StringBuilder("A").charAt(0));
+		admin.setEmail("admin@spring.hotel");
+		admin.setPassword("#springhotel");
+		admin.setAddressEntity(address);
+
+		return admin;
 	}
 }
